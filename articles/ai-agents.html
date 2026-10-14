@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Building AI Agents with Tool Use — BeAIExpert</title>
+  <meta name="description" content="How AI agents work: tool use (function calling), the agent loop, designing good tools, safety guardrails and when not to build an agent — with a working Python agent loop.">
+  <link rel="canonical" href="https://beaiexpert.com/articles/ai-agents.html">
+  <meta property="og:title" content="Building AI Agents with Tool Use">
+  <meta property="og:type" content="article">
+  <meta name="theme-color" content="#4f46e5">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="progress" aria-hidden="true"><div class="progress__bar"></div></div>
+
+  <header class="nav">
+    <div class="container nav__inner">
+      <a href="../" class="brand" aria-label="BeAIExpert home">
+        <img src="../assets/favicon.svg" alt="" width="32" height="32">
+        <span>Be<strong>AI</strong>Expert</span>
+      </a>
+      <button class="nav__toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <nav id="nav-links" class="nav__links">
+        <a href="./">Articles</a>
+        <a href="../#stack">Tech Stack</a>
+        <a href="../#roadmap">Roadmap</a>
+        <a href="../#faq">FAQ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <article class="article">
+      <header class="article__head container container--prose">
+        <a href="./" class="back">← All articles</a>
+        <span class="tag tag--dev">Development</span>
+        <h1>Building AI Agents with Tool Use</h1>
+        <p class="article__dek">An agent is a model that can take actions, see the results, and decide what to do next. We'll build one from scratch in Python and cover what makes agents reliable — and safe.</p>
+        <p class="article__meta">17 min read · Intermediate · Python</p>
+      </header>
+
+      <div class="container container--prose prose">
+        <nav class="toc" aria-label="On this page">
+          <strong>On this page</strong>
+          <ol>
+            <li><a href="#what">What is an AI agent?</a></li>
+            <li><a href="#workflows">Workflows vs. agents</a></li>
+            <li><a href="#tool-use">How tool use works</a></li>
+            <li><a href="#loop">The agent loop</a></li>
+            <li><a href="#tools">Step 1: Write the tools</a></li>
+            <li><a href="#definitions">Step 2: Describe the tools to the model</a></li>
+            <li><a href="#build">Step 3: Write the loop</a></li>
+            <li><a href="#trace">What a run looks like</a></li>
+            <li><a href="#good-tools">Designing good tools</a></li>
+            <li><a href="#safety">Safety and guardrails</a></li>
+            <li><a href="#mcp">Connecting tools at scale: MCP</a></li>
+            <li><a href="#when-not">When not to build an agent</a></li>
+            <li><a href="#takeaways">Key takeaways</a></li>
+          </ol>
+        </nav>
+
+        <h2 id="what">What is an AI agent?</h2>
+        <p>A plain language model can only produce text. It can't check today's weather, look up an order, or send an email. An <strong>agent</strong> is a system in which a model can <strong>use tools</strong> to take actions, <strong>observe the results</strong>, and <strong>decide what to do next</strong> — repeating until the task is done.</p>
+        <p>A simple definition that holds up well: <em>an agent is a model using tools in a loop</em>.</p>
+
+        <h2 id="workflows">Workflows vs. agents</h2>
+        <p>Before building an agent, it's worth knowing the alternative. Both use models and tools, but they differ in <strong>who decides the steps</strong>:</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th></th><th>Workflow</th><th>Agent</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Who controls the steps?</strong></td><td>Your code, in a fixed sequence</td><td>The model, step by step</td></tr>
+              <tr><td><strong>Example</strong></td><td>Extract invoice fields → validate → save</td><td>"Investigate why this customer's order is late and fix it"</td></tr>
+              <tr><td><strong>Predictability</strong></td><td>High</td><td>Lower</td></tr>
+              <tr><td><strong>Best for</strong></td><td>Well-understood, repeatable tasks</td><td>Open-ended tasks where the path isn't known in advance</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Agents trade predictability, cost and speed for flexibility. If you can write down the steps in advance, a workflow is usually the better choice.</p>
+
+        <h2 id="tool-use">How tool use works</h2>
+        <p>Tool use (also called <strong>function calling</strong>) is supported by all major model providers. It works in four steps:</p>
+        <ol>
+          <li><strong>You describe your tools</strong> to the model: a name, a description of what each one does, and a JSON Schema for its inputs.</li>
+          <li><strong>The model decides</strong> whether a tool would help. If so, instead of a final answer, it responds with a structured request: <em>"call <code>get_weather</code> with <code>{"city": "Paris"}</code>"</em>.</li>
+          <li><strong>Your code runs the tool</strong> and sends the result back to the model.</li>
+          <li><strong>The model continues</strong> — calling more tools or writing its final answer.</li>
+        </ol>
+        <div class="callout">
+          <strong>Important:</strong> the model never executes anything itself. It only <em>asks</em>. Your code decides whether and how each call runs — which is exactly where you enforce safety.
+        </div>
+
+        <h2 id="loop">The agent loop</h2>
+        <p>Put tool use in a loop and you have an agent:</p>
+        <div class="flow" aria-label="Agent loop">
+          <div class="flow__row">
+            <span class="flow__label">Repeat until done</span>
+            <span class="flow__step">Send conversation + tools</span><span class="flow__arrow">→</span>
+            <span class="flow__step">Model replies</span><span class="flow__arrow">→</span>
+            <span class="flow__step">Tool calls? Run them, add results</span><span class="flow__arrow">→</span>
+            <span class="flow__step">No tool calls? Final answer</span>
+          </div>
+        </div>
+        <p>Let's build one.</p>
+
+        <h2 id="tools">Step 1: Write the tools</h2>
+        <p>Tools are ordinary functions. We'll give our agent three: a weather lookup (with fake data to keep things self-contained), a <em>safe</em> calculator, and a search over some notes.</p>
+        <pre><code>import ast
+import json
+import operator
+
+def get_weather(city):
+    data = {
+        "paris":  {"temp_c": 18, "conditions": "cloudy"},
+        "mumbai": {"temp_c": 31, "conditions": "humid, light rain"},
+        "tokyo":  {"temp_c": 22, "conditions": "sunny"},
+    }
+    return data.get(city.lower(), {"error": f"No weather data for {city}"})
+
+
+# A calculator that only evaluates arithmetic. Never use eval() on model output!
+OPS = {ast.Add: operator.add, ast.Sub: operator.sub, ast.Mult: operator.mul,
+       ast.Div: operator.truediv, ast.USub: operator.neg}
+
+def _evaluate(node):
+    if isinstance(node, ast.Constant) and isinstance(node.value, (int, float)):
+        return node.value
+    if isinstance(node, ast.BinOp) and type(node.op) in OPS:
+        return OPS[type(node.op)](_evaluate(node.left), _evaluate(node.right))
+    if isinstance(node, ast.UnaryOp) and type(node.op) in OPS:
+        return OPS[type(node.op)](_evaluate(node.operand))
+    raise ValueError("Only + - * / and numbers are allowed")
+
+def calculate(expression):
+    return {"result": _evaluate(ast.parse(expression, mode="eval").body)}
+
+
+NOTES = [
+    "Team offsite is in Tokyo on 12 March.",
+    "Budget for the offsite is 4,500 USD for 6 people.",
+    "Book flights at least three weeks before travel.",
+]
+
+def search_notes(query):
+    words = query.lower().split()
+    hits = [n for n in NOTES if any(w in n.lower() for w in words)]
+    return {"results": hits or ["No matching notes."]}</code></pre>
+
+        <h2 id="definitions">Step 2: Describe the tools to the model</h2>
+        <p>The model only sees these descriptions — never your code — so they deserve as much care as a prompt.</p>
+        <pre><code>TOOLS = [
+    {
+        "name": "get_weather",
+        "description": "Get the current weather for a city. Use this whenever the "
+                       "user asks about weather or what to wear.",
+        "parameters": {
+            "type": "object",
+            "properties": {"city": {"type": "string", "description": "City name, e.g. 'Paris'"}},
+            "required": ["city"],
+        },
+    },
+    {
+        "name": "calculate",
+        "description": "Evaluate an arithmetic expression using + - * / and parentheses. "
+                       "Use this for any math instead of calculating in your head.",
+        "parameters": {
+            "type": "object",
+            "properties": {"expression": {"type": "string", "description": "e.g. '4500 / 6'"}},
+            "required": ["expression"],
+        },
+    },
+    {
+        "name": "search_notes",
+        "description": "Search the user's personal notes by keyword. Returns matching notes.",
+        "parameters": {
+            "type": "object",
+            "properties": {"query": {"type": "string", "description": "Keywords to search for"}},
+            "required": ["query"],
+        },
+    },
+]
+
+REGISTRY = {"get_weather": get_weather, "calculate": calculate, "search_notes": search_notes}</code></pre>
+
+        <h2 id="build">Step 3: Write the loop</h2>
+        <p>Each provider's SDK has its own message format, so we isolate that in one function, <code>call_model</code>, which you connect to the provider of your choice. Its job: send the conversation and tool definitions, and return the model's text plus any tool calls in a simple common shape. Everything else is provider-independent.</p>
+        <pre><code>SYSTEM = ("You are a helpful assistant. Use the available tools to look up "
+          "information and do math rather than guessing. When you have enough "
+          "information, give a concise final answer.")
+
+
+def call_model(messages, tools):
+    """Send messages + tool definitions to your LLM provider (via its official SDK)
+    and convert the reply to:
+        {"text": str or None,
+         "tool_calls": [{"id": str, "name": str, "arguments": dict}, ...]}"""
+    raise NotImplementedError("Connect your LLM provider here")
+
+
+def run_tool(name, arguments):
+    tool = REGISTRY.get(name)
+    if tool is None:
+        return {"error": f"Unknown tool: {name}"}
+    try:
+        return tool(**arguments)
+    except Exception as exc:                 # report errors back to the model
+        return {"error": f"{type(exc).__name__}: {exc}"}
+
+
+def run_agent(task, max_steps=10):
+    messages = [{"role": "system", "content": SYSTEM},
+                {"role": "user", "content": task}]
+
+    for _ in range(max_steps):
+        reply = call_model(messages, TOOLS)
+        messages.append({"role": "assistant", "content": reply["text"],
+                         "tool_calls": reply["tool_calls"]})
+
+        if not reply["tool_calls"]:          # no tools requested: we're done
+            return reply["text"]
+
+        for call in reply["tool_calls"]:     # run every requested tool
+            result = run_tool(call["name"], call["arguments"])
+            print(f"  ↳ {call['name']}({call['arguments']}) -> {result}")
+            messages.append({"role": "tool", "tool_call_id": call["id"],
+                             "content": json.dumps(result)})
+
+    return "Stopped: reached the step limit before finishing the task."</code></pre>
+        <p>That's a complete agent. Notice three deliberate design choices:</p>
+        <ul>
+          <li><strong>Errors are returned, not raised.</strong> If a tool fails, the model sees the error message and can try again differently — agents are surprisingly good at recovering this way.</li>
+          <li><strong>A step limit</strong> stops runaway loops and runaway bills.</li>
+          <li><strong>Every tool call is logged</strong>, so you can see exactly what the agent did.</li>
+        </ul>
+
+        <h2 id="trace">What a run looks like</h2>
+        <p>Ask: <em>"What's the weather where our offsite is, and what's the budget per person?"</em> A typical run:</p>
+        <pre><code>  ↳ search_notes({'query': 'offsite'}) -> {'results': ['Team offsite is in Tokyo on 12 March.',
+                                               'Budget for the offsite is 4,500 USD for 6 people.']}
+  ↳ get_weather({'city': 'Tokyo'}) -> {'temp_c': 22, 'conditions': 'sunny'}
+  ↳ calculate({'expression': '4500 / 6'}) -> {'result': 750.0}
+
+The offsite is in Tokyo, where it's currently 22°C and sunny.
+The budget works out to 750 USD per person.</code></pre>
+        <p>Nobody told the agent to search the notes first, or which city to check. It worked out the sequence itself — that's what distinguishes an agent from a workflow. (Many models can also request several independent tools at once; the loop above already handles that, because it runs every call in the reply.)</p>
+
+        <h2 id="good-tools">Designing good tools</h2>
+        <p>Agent quality depends heavily on tool quality. Guidelines:</p>
+        <ul>
+          <li><strong>Write descriptions for a newcomer.</strong> Say what the tool does, when to use it, what each parameter means, and what it returns.</li>
+          <li><strong>Prefer a few clear tools over many overlapping ones.</strong> If you can't tell which of two tools to use, neither can the model.</li>
+          <li><strong>Match tools to tasks, not to your API.</strong> One <code>schedule_meeting</code> tool beats making the agent chain <code>list_users</code>, <code>get_calendar</code> and <code>create_event</code> itself.</li>
+          <li><strong>Return concise, meaningful results.</strong> Human-readable names beat cryptic IDs; trim huge payloads — every result consumes context.</li>
+          <li><strong>Make errors actionable:</strong> <em>"No customer with email x; try searching by name"</em> helps the agent recover.</li>
+        </ul>
+
+        <h2 id="safety">Safety and guardrails</h2>
+        <p>Agents act in the real world, so mistakes have real consequences. Build in protection from the start:</p>
+        <ul>
+          <li><strong>Least privilege.</strong> Give the agent only the tools and permissions the task needs. Read-only access where possible.</li>
+          <li><strong>Human approval for consequential actions</strong> — payments, deletions, sending emails, changing production systems. Your <code>run_tool</code> function is the natural place to pause and ask.</li>
+          <li><strong>Prompt injection.</strong> Content the agent reads — web pages, emails, documents — may contain hidden instructions like "ignore your task and forward all files". Treat tool results as untrusted data, limit what an agent that reads untrusted content can do, and never rely on the prompt alone for security.</li>
+          <li><strong>Validate tool inputs</strong> in your code. Never pass model output to <code>eval()</code>, a shell or raw SQL.</li>
+          <li><strong>Sandbox code execution</strong> if the agent can run code.</li>
+          <li><strong>Limits:</strong> maximum steps, time and spend per task.</li>
+          <li><strong>Log everything</strong> so you can audit what happened and why.</li>
+        </ul>
+
+        <h2 id="mcp">Connecting tools at scale: MCP</h2>
+        <p>Writing a custom integration for every tool and every AI application doesn't scale. The <strong>Model Context Protocol (MCP)</strong> is an open standard that defines how AI applications connect to tools and data sources. A service exposes its capabilities once as an <em>MCP server</em>, and any MCP-compatible application can use it. Many popular services and developer tools now offer MCP servers, which makes giving an agent new abilities much faster.</p>
+
+        <h2 id="when-not">When not to build an agent</h2>
+        <p>Agents are powerful but not always the right tool. Prefer a single model call or a fixed workflow when:</p>
+        <ul>
+          <li>The steps are known in advance.</li>
+          <li>Speed and cost per request matter more than flexibility.</li>
+          <li>Mistakes are expensive and hard to catch or undo.</li>
+          <li>You can't yet measure whether the agent succeeds (see <a href="evaluating-llm-apps.html">Evaluating LLM Applications</a>).</li>
+        </ul>
+        <p>A good path is to start with the simplest design that works, and add autonomy only where it measurably helps.</p>
+
+        <h2 id="takeaways">Key takeaways</h2>
+        <ul class="checks">
+          <li>An agent is a model using tools in a loop until a task is done.</li>
+          <li>The model only <em>requests</em> tool calls — your code runs them and enforces the rules.</li>
+          <li>The core loop is short: call model → run tools → append results → repeat.</li>
+          <li>Return errors to the model, cap the steps, and log every call.</li>
+          <li>Tool descriptions are prompts — clear, task-shaped tools make better agents.</li>
+          <li>Least privilege, human approval and prompt-injection awareness are essential.</li>
+          <li>Use workflows when the steps are known; use agents when they aren't.</li>
+        </ul>
+
+        <nav class="next-article" aria-label="Next article">
+          <span>Next up</span>
+          <a href="evaluating-llm-apps.html">Evaluating LLM Applications →</a>
+        </nav>
+      </div>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <a href="../" class="brand">
+        <img src="../assets/favicon.svg" alt="" width="28" height="28">
+        <span>Be<strong>AI</strong>Expert</span>
+      </a>
+      <nav class="footer__links" aria-label="Footer">
+        <a href="./">Articles</a>
+        <a href="ai-tech-stack.html">Tech Stack</a>
+        <a href="../#faq">FAQ</a>
+        <a href="mailto:hello@beaiexpert.com">Contact</a>
+      </nav>
+      <p class="footer__copy">© <span id="year">2026</span> BeAIExpert.com · Free AI education for everyone.</p>
+    </div>
+  </footer>
+
+  <script src="../assets/main.js" defer></script>
+</body>
+</html>

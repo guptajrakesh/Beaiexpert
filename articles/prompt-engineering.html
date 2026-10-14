@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prompt Engineering That Actually Works — BeAIExpert</title>
+  <meta name="description" content="Practical, durable prompting techniques: giving context, examples, structure, step-by-step reasoning, output formats, and how to iterate on prompts systematically.">
+  <link rel="canonical" href="https://beaiexpert.com/articles/prompt-engineering.html">
+  <meta property="og:title" content="Prompt Engineering That Actually Works">
+  <meta property="og:type" content="article">
+  <meta name="theme-color" content="#4f46e5">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="progress" aria-hidden="true"><div class="progress__bar"></div></div>
+
+  <header class="nav">
+    <div class="container nav__inner">
+      <a href="../" class="brand" aria-label="BeAIExpert home">
+        <img src="../assets/favicon.svg" alt="" width="32" height="32">
+        <span>Be<strong>AI</strong>Expert</span>
+      </a>
+      <button class="nav__toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <nav id="nav-links" class="nav__links">
+        <a href="./">Articles</a>
+        <a href="../#stack">Tech Stack</a>
+        <a href="../#roadmap">Roadmap</a>
+        <a href="../#faq">FAQ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <article class="article">
+      <header class="article__head container container--prose">
+        <a href="./" class="back">← All articles</a>
+        <span class="tag tag--fundamentals">Fundamentals</span>
+        <h1>Prompt Engineering That Actually Works</h1>
+        <p class="article__dek">Forget magic phrases. Good prompting is clear communication plus a feedback loop. These are the techniques that hold up across models — with before-and-after examples.</p>
+        <p class="article__meta">15 min read · Beginner</p>
+      </header>
+
+      <div class="container container--prose prose">
+        <nav class="toc" aria-label="On this page">
+          <strong>On this page</strong>
+          <ol>
+            <li><a href="#mindset">The right mindset</a></li>
+            <li><a href="#specific">1. Be specific about the task and the goal</a></li>
+            <li><a href="#context">2. Provide the context</a></li>
+            <li><a href="#examples">3. Show examples (few-shot prompting)</a></li>
+            <li><a href="#structure">4. Structure your prompt</a></li>
+            <li><a href="#reasoning">5. Leave room for reasoning</a></li>
+            <li><a href="#format">6. Specify the output format</a></li>
+            <li><a href="#roles">7. Use roles and system prompts — sensibly</a></li>
+            <li><a href="#uncertainty">8. Allow "I don't know"</a></li>
+            <li><a href="#chaining">9. Break big tasks into steps</a></li>
+            <li><a href="#iterate">10. Iterate like an engineer</a></li>
+            <li><a href="#mistakes">Common mistakes</a></li>
+            <li><a href="#takeaways">Key takeaways</a></li>
+          </ol>
+        </nav>
+
+        <h2 id="mindset">The right mindset</h2>
+        <p>Prompt engineering has a reputation for secret tricks: special phrases, threats, tips, magic words. Most of that is folklore. Modern models are trained to follow instructions, so the biggest gains come from something less exciting: <strong>communicating clearly</strong>.</p>
+        <p>A useful test: imagine handing your prompt to a smart new colleague who knows nothing about your project. Would they have enough information to do an excellent job? If they'd need to ask five clarifying questions, so does the model — except the model can't ask; it guesses.</p>
+        <div class="callout">
+          <strong>Rule of thumb:</strong> most bad outputs come from missing context, not from a "bad model". Before rewording, ask: <em>what does the model not know that I know?</em>
+        </div>
+
+        <h2 id="specific">1. Be specific about the task and the goal</h2>
+        <p>Vague requests get generic answers. State what you want, who it's for, and what "good" looks like.</p>
+        <div class="compare">
+          <div class="compare__bad"><span>Before</span><pre><code>Write about our new feature.</code></pre></div>
+          <div class="compare__good"><span>After</span><pre><code>Write a 150-word announcement of our new "Export to PDF"
+feature for our customer newsletter. Readers are small-business
+owners who aren't technical. Focus on the time it saves them,
+use a friendly tone, and end with one sentence telling them
+where to find it (File → Export).</code></pre></div>
+        </div>
+        <p>It also helps to explain <em>why</em>. "Keep it short because people read this on their phones" gives the model a principle it can apply to decisions you didn't anticipate, which a bare "keep it short" doesn't.</p>
+
+        <h2 id="context">2. Provide the context</h2>
+        <p>The model only knows what's in its training data and in your prompt. Include the relevant facts, documents, constraints and background directly. If you want it to answer from a document, paste the document. If there's a style guide, include it.</p>
+        <p>When you include a lot of material, put the long documents first and your actual question or instructions <strong>after</strong> them — this tends to produce better results with long inputs.</p>
+
+        <h2 id="examples">3. Show examples (few-shot prompting)</h2>
+        <p>Examples are often the single most effective way to communicate format, tone and judgment. Describing a style is hard; showing it is easy.</p>
+        <pre><code>Classify each customer message as BILLING, BUG, FEATURE_REQUEST or OTHER.
+
+Message: "I was charged twice this month."
+Category: BILLING
+
+Message: "The app crashes when I upload a photo."
+Category: BUG
+
+Message: "It would be great if I could export to Excel."
+Category: FEATURE_REQUEST
+
+Message: "My invoice shows the wrong company name."
+Category:</code></pre>
+        <p>Tips for good examples:</p>
+        <ul>
+          <li><strong>Make them varied.</strong> If all examples look alike, the model may copy surface details (length, wording) rather than the underlying pattern.</li>
+          <li><strong>Include edge cases</strong> — the tricky inputs where judgment matters most.</li>
+          <li><strong>Keep them correct.</strong> The model will imitate mistakes in your examples too.</li>
+        </ul>
+
+        <h2 id="structure">4. Structure your prompt</h2>
+        <p>Long prompts that mix instructions, data and examples in one block are easy to misread. Separate the parts clearly. XML-style tags, Markdown headings or triple quotes all work:</p>
+        <pre><code>You are reviewing a contract for a small business owner.
+
+&lt;contract&gt;
+{contract_text}
+&lt;/contract&gt;
+
+&lt;instructions&gt;
+1. List any clauses about automatic renewal or cancellation fees.
+2. Flag anything unusual compared with a standard services agreement.
+3. Explain each point in plain English, without legal jargon.
+&lt;/instructions&gt;</code></pre>
+        <p>Clear boundaries also reduce the risk of the model mistaking content inside a document for instructions to follow.</p>
+
+        <h2 id="reasoning">5. Leave room for reasoning</h2>
+        <p>For multi-step problems — math, analysis, planning, tricky judgments — models do better when they work through the problem before committing to an answer. This is known as <strong>chain-of-thought</strong> prompting.</p>
+        <p>Many current models have built-in "thinking" or "reasoning" modes that do this automatically; if yours does, turn it on for hard tasks rather than prompting for it. Otherwise, ask explicitly:</p>
+        <pre><code>Before answering, think through the problem step by step:
+identify the relevant facts, consider alternatives, then give
+your final answer on a separate line starting with "Answer:".</code></pre>
+        <p>Asking for the final answer in a predictable place makes it easy for your code to extract it while still allowing the reasoning.</p>
+
+        <h2 id="format">6. Specify the output format</h2>
+        <p>If a program will read the output, say exactly what shape it must have — and give an example.</p>
+        <pre><code>Extract the following fields from the email and return only JSON,
+with no extra text:
+
+{"customer_name": string, "order_id": string or null,
+ "issue_summary": string (max 20 words), "urgent": boolean}</code></pre>
+        <p>For production use, many model APIs offer <strong>structured outputs</strong> or JSON modes that <em>guarantee</em> valid output against a schema — prefer those over prompt instructions alone when available.</p>
+        <p>Two more formatting tips:</p>
+        <ul>
+          <li><strong>Say what to do, not only what to avoid.</strong> "Write in flowing paragraphs" works better than "don't use bullet points".</li>
+          <li><strong>Your prompt's style leaks into the answer.</strong> A prompt full of Markdown tends to get Markdown back; a plain prose prompt tends to get prose.</li>
+        </ul>
+
+        <h2 id="roles">7. Use roles and system prompts — sensibly</h2>
+        <p>Most chat APIs have a <strong>system prompt</strong>: standing instructions that apply to the whole conversation. It's the right place for the assistant's purpose, audience, tone, rules and background knowledge.</p>
+        <p>Assigning a role ("You are an experienced tax accountant explaining things to first-time freelancers") can help set expertise level and tone. But a role is not a magic spell — it works because it implies context. The more concrete detail you add about the audience and goal, the better.</p>
+
+        <h2 id="uncertainty">8. Allow "I don't know"</h2>
+        <p>Models try to be helpful, and without permission to say otherwise they may produce a plausible-sounding answer when they lack the information. Explicitly allow uncertainty:</p>
+        <pre><code>Answer using only the provided documents. If the documents don't
+contain the answer, say "I couldn't find that in the documents"
+rather than guessing.</code></pre>
+        <p>Asking the model to quote the relevant passage before answering makes answers easier to verify, and reduces made-up details further.</p>
+
+        <h2 id="chaining">9. Break big tasks into steps</h2>
+        <p>One giant prompt that researches, analyzes, writes and formats in a single pass is hard to debug. Splitting it into a chain of smaller prompts — <em>extract → analyze → draft → review</em> — makes each step simpler, lets you check intermediate results, and lets you use different settings (or models) for different steps.</p>
+
+        <h2 id="iterate">10. Iterate like an engineer</h2>
+        <p>The real skill is not writing the perfect prompt on the first try — it's improving prompts systematically:</p>
+        <ol>
+          <li><strong>Collect test inputs</strong> — 10–50 realistic examples, including hard and unusual cases.</li>
+          <li><strong>Define success</strong> — what makes an output good or bad, as concretely as possible.</li>
+          <li><strong>Run, read and score</strong> the outputs. Actually read them; patterns in failures tell you what's missing.</li>
+          <li><strong>Change one thing at a time</strong> and re-run the whole set, so you notice when a fix for one case breaks another.</li>
+        </ol>
+        <p>This turns prompting from guesswork into measurable progress. We cover it in depth in <a href="evaluating-llm-apps.html">Evaluating LLM Applications</a>.</p>
+
+        <h2 id="mistakes">Common mistakes</h2>
+        <ul>
+          <li><strong>Assuming shared context</strong> — the model doesn't know your company, project or preferences unless you say so.</li>
+          <li><strong>Contradictory instructions</strong> — "be thorough" and "be brief" with no guidance on how to balance them.</li>
+          <li><strong>Shouting</strong> — ALL CAPS and "CRITICAL!!!" rarely help with modern models and can make them over-apply a rule. Calm, clear instructions work better.</li>
+          <li><strong>Prompt bloat</strong> — piling on rules after every failure until the prompt contradicts itself. Periodically rewrite from scratch.</li>
+          <li><strong>Testing on one example</strong> — a prompt that works once may fail on the next ten inputs.</li>
+        </ul>
+
+        <h2 id="takeaways">Key takeaways</h2>
+        <ul class="checks">
+          <li>Clear communication beats tricks: say what you want, for whom, and why.</li>
+          <li>Give the model the context it can't know on its own.</li>
+          <li>Examples are the most powerful way to show format and judgment.</li>
+          <li>Structure long prompts with clear sections or tags.</li>
+          <li>Let the model reason on hard problems; define output formats precisely.</li>
+          <li>Allow "I don't know" to reduce made-up answers.</li>
+          <li>Improve prompts with a test set, not by gut feeling.</li>
+        </ul>
+
+        <nav class="next-article" aria-label="Next article">
+          <span>Next up</span>
+          <a href="ai-tech-stack.html">The Modern AI Tech Stack, Layer by Layer →</a>
+        </nav>
+      </div>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <a href="../" class="brand">
+        <img src="../assets/favicon.svg" alt="" width="28" height="28">
+        <span>Be<strong>AI</strong>Expert</span>
+      </a>
+      <nav class="footer__links" aria-label="Footer">
+        <a href="./">Articles</a>
+        <a href="ai-tech-stack.html">Tech Stack</a>
+        <a href="../#faq">FAQ</a>
+        <a href="mailto:hello@beaiexpert.com">Contact</a>
+      </nav>
+      <p class="footer__copy">© <span id="year">2026</span> BeAIExpert.com · Free AI education for everyone.</p>
+    </div>
+  </footer>
+
+  <script src="../assets/main.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Evaluating LLM Applications — BeAIExpert</title>
+  <meta name="description" content="How to measure whether your AI application actually works: building test sets, code-based checks, LLM-as-judge grading, RAG and agent metrics, and running evals continuously.">
+  <link rel="canonical" href="https://beaiexpert.com/articles/evaluating-llm-apps.html">
+  <meta property="og:title" content="Evaluating LLM Applications">
+  <meta property="og:type" content="article">
+  <meta name="theme-color" content="#4f46e5">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="progress" aria-hidden="true"><div class="progress__bar"></div></div>
+
+  <header class="nav">
+    <div class="container nav__inner">
+      <a href="../" class="brand" aria-label="BeAIExpert home">
+        <img src="../assets/favicon.svg" alt="" width="32" height="32">
+        <span>Be<strong>AI</strong>Expert</span>
+      </a>
+      <button class="nav__toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <nav id="nav-links" class="nav__links">
+        <a href="./">Articles</a>
+        <a href="../#stack">Tech Stack</a>
+        <a href="../#roadmap">Roadmap</a>
+        <a href="../#faq">FAQ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <article class="article">
+      <header class="article__head container container--prose">
+        <a href="./" class="back">← All articles</a>
+        <span class="tag tag--dev">Development</span>
+        <h1>Evaluating LLM Applications</h1>
+        <p class="article__dek">"It looked good when I tried it" is not a quality bar. Evals turn AI development from guesswork into engineering — here's how to build them, with a working Python harness.</p>
+        <p class="article__meta">15 min read · Intermediate · Python</p>
+      </header>
+
+      <div class="container container--prose prose">
+        <nav class="toc" aria-label="On this page">
+          <strong>On this page</strong>
+          <ol>
+            <li><a href="#why">Why evaluation is the hard part</a></li>
+            <li><a href="#what">Decide what "good" means</a></li>
+            <li><a href="#dataset">Build a test set</a></li>
+            <li><a href="#graders">Three ways to grade</a></li>
+            <li><a href="#harness">A minimal eval harness in Python</a></li>
+            <li><a href="#judge">Adding an LLM judge</a></li>
+            <li><a href="#rag">Evaluating RAG systems</a></li>
+            <li><a href="#agents">Evaluating agents</a></li>
+            <li><a href="#production">Evals in production</a></li>
+            <li><a href="#pitfalls">Common pitfalls</a></li>
+            <li><a href="#takeaways">Key takeaways</a></li>
+          </ol>
+        </nav>
+
+        <h2 id="why">Why evaluation is the hard part</h2>
+        <p>Traditional software is deterministic: the same input gives the same output, and a unit test passes or fails. LLM applications are different:</p>
+        <ul>
+          <li>The same input can produce <strong>different outputs</strong> each time.</li>
+          <li>There are often <strong>many acceptable answers</strong>, so you can't just compare against one string.</li>
+          <li>A prompt change that fixes one case can <strong>silently break others</strong>.</li>
+          <li>Model updates, new documents and new user behavior all shift quality over time.</li>
+        </ul>
+        <p>Without evaluation, every change is a gamble judged by trying a few examples by hand. With evaluation — <strong>"evals"</strong> — you get a score you can track, compare and improve. Teams that build great AI products almost always have one thing in common: good evals, built early.</p>
+
+        <h2 id="what">Decide what "good" means</h2>
+        <p>Before measuring, define success for <em>your</em> application. Common dimensions:</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Dimension</th><th>Question it answers</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Correctness</strong></td><td>Is the answer factually right?</td></tr>
+              <tr><td><strong>Faithfulness</strong></td><td>Is it supported by the provided sources, without made-up details?</td></tr>
+              <tr><td><strong>Relevance &amp; completeness</strong></td><td>Does it actually address the whole question?</td></tr>
+              <tr><td><strong>Format</strong></td><td>Valid JSON? Right length? Required sections present?</td></tr>
+              <tr><td><strong>Tone &amp; policy</strong></td><td>Appropriate style; follows rules; refuses what it should</td></tr>
+              <tr><td><strong>Cost &amp; latency</strong></td><td>Tokens, dollars and seconds per request</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Make criteria concrete. "Helpful" is hard to grade; "mentions the 30-day refund window and links to the returns page" is easy.</p>
+
+        <h2 id="dataset">Build a test set</h2>
+        <p>A test set is a list of realistic inputs, each with what a good output should contain. Where to get cases:</p>
+        <ul>
+          <li><strong>Real usage</strong> — logs, support tickets, questions people actually ask. The best source.</li>
+          <li><strong>Expert-written cases</strong> — the questions a domain expert knows are tricky.</li>
+          <li><strong>Failures</strong> — every bug report becomes a test case, so it can never quietly return.</li>
+          <li><strong>Edge and adversarial cases</strong> — empty input, off-topic requests, other languages, attempts to make the system misbehave.</li>
+          <li><strong>Synthetic cases</strong> — an LLM can draft variations to broaden coverage; review them before trusting them.</li>
+        </ul>
+        <div class="callout callout--tip">
+          <strong>Start small:</strong> 20–50 good cases are far more useful than none. Grow the set over time, mostly from real failures.
+        </div>
+
+        <h2 id="graders">Three ways to grade</h2>
+        <h3>1. Code-based checks</h3>
+        <p>Fast, cheap, deterministic. Use them wherever possible: exact match for classification labels, "contains" / "doesn't contain" checks, JSON validity, regular expressions, length limits, whether a function call had the right arguments.</p>
+        <h3>2. LLM-as-judge</h3>
+        <p>Use a model to grade outputs against a rubric — for qualities code can't check, like correctness of a free-text answer or faithfulness to sources. It scales well, but judges have biases (they can favor longer answers or their own style), so <strong>validate the judge</strong>: grade a sample by hand and check that the judge agrees with you.</p>
+        <h3>3. Human review</h3>
+        <p>The gold standard for nuanced quality, and essential for building and validating the other two. Too slow to run on every change, so use it to calibrate, spot-check and investigate.</p>
+
+        <h2 id="harness">A minimal eval harness in Python</h2>
+        <p>You don't need a framework to start. Here's a complete harness: test cases, code-based checks and a runner that reports failures.</p>
+        <pre><code>import json
+
+TEST_CASES = [
+    {"id": "refund-window",
+     "input": "How long do I have to return something?",
+     "must_include": ["30 days"]},
+    {"id": "refund-digital",
+     "input": "Can I get a refund on an e-book?",
+     "must_include": ["digital"], "must_not_include": ["30 days"]},
+    {"id": "out-of-scope",
+     "input": "What's your CEO's home address?",
+     "must_include": ["can't help"]},
+]
+
+# Each check returns True (pass) or False (fail).
+# A check that doesn't apply to a case passes automatically.
+def check_includes(output, case):
+    return all(p.lower() in output.lower() for p in case.get("must_include", []))
+
+def check_excludes(output, case):
+    return not any(p.lower() in output.lower() for p in case.get("must_not_include", []))
+
+def check_length(output, case):
+    return len(output.split()) &lt;= case.get("max_words", 150)
+
+CHECKS = {"includes": check_includes, "excludes": check_excludes, "length": check_length}
+
+
+def run_eval(app, cases, checks):
+    results = []
+    for case in cases:
+        output = app(case["input"])
+        outcomes = {name: check(output, case) for name, check in checks.items()}
+        results.append({"id": case["id"], "passed": all(outcomes.values()),
+                        "outcomes": outcomes, "output": output})
+
+    passed = sum(r["passed"] for r in results)
+    print(f"{passed}/{len(results)} passed ({passed / len(results):.0%})")
+    for r in results:
+        if not r["passed"]:
+            failed = [name for name, ok in r["outcomes"].items() if not ok]
+            print(f"  FAIL {r['id']} {failed}: {r['output'][:120]!r}")
+    return results</code></pre>
+        <p><code>app</code> is any function that takes an input and returns your application's output — your RAG pipeline, agent or prompt. Run <code>run_eval(my_app, TEST_CASES, CHECKS)</code> before and after every change and compare the scores. Save results to a file so you can track them over time.</p>
+
+        <h2 id="judge">Adding an LLM judge</h2>
+        <p>For answers that can be phrased many ways, give the judge a reference answer and ask for a simple, structured verdict:</p>
+        <pre><code>JUDGE_PROMPT = """You are grading an AI assistant's answer to a customer question.
+
+Question: {question}
+Reference answer (written by an expert): {reference}
+Assistant's answer: {answer}
+
+Is the assistant's answer factually consistent with the reference and does it
+answer the question? Minor wording differences are fine; missing or wrong
+facts are not.
+
+Respond with only JSON: {{"reason": "one sentence", "correct": true or false}}"""
+
+
+def call_llm(prompt):
+    """Send the prompt to your LLM provider and return the text reply."""
+    raise NotImplementedError("Connect your LLM provider here")
+
+
+def check_judge(output, case):
+    if "reference" not in case:
+        return True
+    reply = call_llm(JUDGE_PROMPT.format(question=case["input"],
+                                         reference=case["reference"],
+                                         answer=output))
+    return json.loads(reply)["correct"]
+
+CHECKS["judge"] = check_judge</code></pre>
+        <p>Good judge practices:</p>
+        <ul>
+          <li><strong>Ask for a reason before the verdict</strong> — it tends to improve the grade and makes disagreements easy to debug.</li>
+          <li><strong>Prefer pass/fail or a small, well-defined scale</strong> over vague 1–10 scores.</li>
+          <li><strong>Grade one criterion per judge call</strong> rather than everything at once.</li>
+          <li><strong>Use a capable model as the judge</strong>, and measure its agreement with human grades before relying on it.</li>
+          <li>Use your provider's <strong>structured output</strong> feature, if available, to guarantee valid JSON.</li>
+        </ul>
+
+        <h2 id="rag">Evaluating RAG systems</h2>
+        <p>Evaluate retrieval and generation <strong>separately</strong>, so you know which half to fix:</p>
+        <ul>
+          <li><strong>Retrieval recall@k</strong> — for each question, label which chunk(s) contain the answer. Did they appear in the top <em>k</em> results? This needs no LLM and is very cheap to run.</li>
+          <li><strong>Faithfulness</strong> — is every claim in the answer supported by the retrieved context? (An LLM judge works well here.)</li>
+          <li><strong>Answer correctness</strong> — compared with a reference answer.</li>
+          <li><strong>"I don't know" behavior</strong> — for questions your documents can't answer, does it say so instead of guessing?</li>
+        </ul>
+        <p>Libraries like <strong>Ragas</strong> and <strong>DeepEval</strong> implement many of these metrics if you'd rather not write them yourself.</p>
+
+        <h2 id="agents">Evaluating agents</h2>
+        <p>For <a href="ai-agents.html">agents</a>, judge the <strong>outcome</strong> first: did the task actually get done? Where possible, check the end state directly (was the ticket updated? is the file correct?) rather than reading the agent's description of what it did. Then look at the path:</p>
+        <ul>
+          <li>Number of steps and tool calls, and tool error rate.</li>
+          <li>Whether it used forbidden or unnecessary tools.</li>
+          <li>Cost and time per task.</li>
+          <li>Consistency: run each task several times — agents can succeed once and fail the next time.</li>
+        </ul>
+
+        <h2 id="production">Evals in production</h2>
+        <p>Offline evals catch regressions before release. Once you ship, keep measuring:</p>
+        <ul>
+          <li><strong>Run evals automatically</strong> — on every prompt or code change, like unit tests in CI.</li>
+          <li><strong>Log and trace real traffic</strong> — prompts, outputs, tool calls, latency and cost. Tools like Langfuse, LangSmith and Arize Phoenix help.</li>
+          <li><strong>Collect user feedback</strong> — thumbs up/down, edits, escalations to a human.</li>
+          <li><strong>Sample and grade production outputs</strong> regularly, and add new failure types to the test set.</li>
+          <li><strong>Re-run evals before switching models</strong> — a newer model is usually better overall but may change behavior your app depends on.</li>
+        </ul>
+
+        <h2 id="pitfalls">Common pitfalls</h2>
+        <ul>
+          <li><strong>Only testing happy paths</strong> — your users will find the edge cases.</li>
+          <li><strong>Overfitting to the test set</strong> — tuning prompts until a small set passes perfectly. Keep a held-out set you don't tune on.</li>
+          <li><strong>Trusting an unvalidated judge</strong> — always check the judge against human grades.</li>
+          <li><strong>Ignoring variance</strong> — one run can be lucky. For important decisions, run multiple times and compare averages.</li>
+          <li><strong>Never reading the outputs</strong> — scores tell you <em>that</em> something failed; reading failures tells you <em>why</em>.</li>
+        </ul>
+
+        <h2 id="takeaways">Key takeaways</h2>
+        <ul class="checks">
+          <li>Evals turn AI development from guesswork into measurable engineering.</li>
+          <li>Define concrete success criteria for your specific application.</li>
+          <li>Start with 20–50 realistic cases and grow the set from real failures.</li>
+          <li>Prefer code checks; use validated LLM judges for nuanced qualities; calibrate with humans.</li>
+          <li>Evaluate RAG retrieval and generation separately; evaluate agents on outcomes.</li>
+          <li>Run evals on every change and keep monitoring in production.</li>
+        </ul>
+
+        <nav class="next-article" aria-label="Next article">
+          <span>Keep learning</span>
+          <a href="./">Browse all articles →</a>
+        </nav>
+      </div>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <a href="../" class="brand">
+        <img src="../assets/favicon.svg" alt="" width="28" height="28">
+        <span>Be<strong>AI</strong>Expert</span>
+      </a>
+      <nav class="footer__links" aria-label="Footer">
+        <a href="./">Articles</a>
+        <a href="ai-tech-stack.html">Tech Stack</a>
+        <a href="../#faq">FAQ</a>
+        <a href="mailto:hello@beaiexpert.com">Contact</a>
+      </nav>
+      <p class="footer__copy">© <span id="year">2026</span> BeAIExpert.com · Free AI education for everyone.</p>
+    </div>
+  </footer>
+
+  <script src="../assets/main.js" defer></script>
+</body>
+</html>

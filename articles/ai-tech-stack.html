@@ -127,8 +127,8 @@
         <ul>
           <li><strong>Ingestion &amp; parsing</strong> — extracting clean text from PDFs, web pages, docs and databases (tools like Unstructured, Docling, or simple custom loaders).</li>
           <li><strong>Chunking</strong> — splitting documents into passages small enough to retrieve precisely.</li>
-          <li><strong>Embedding models</strong> — converting each chunk into a vector that captures its meaning.</li>
-          <li><strong>Vector databases</strong> — storing those vectors and finding the closest matches to a question quickly. Options range from <strong>pgvector</strong> (an extension for PostgreSQL — great if you already use Postgres) to dedicated databases like <strong>Pinecone</strong>, <strong>Qdrant</strong>, <strong>Weaviate</strong>, <strong>Milvus</strong> and <strong>Chroma</strong>.</li>
+          <li><strong>Embedding models</strong> — converting each chunk into a vector that captures its meaning (see <a href="embeddings.html">Embeddings Explained</a>).</li>
+          <li><strong>Vector databases</strong> — storing those vectors and finding the closest matches to a question quickly. Options range from <strong>pgvector</strong> (an extension for PostgreSQL — great if you already use Postgres) to dedicated databases like <strong>Pinecone</strong>, <strong>Qdrant</strong>, <strong>Weaviate</strong>, <strong>Milvus</strong> and <strong>Chroma</strong> (see <a href="vector-databases.html">Choosing a Vector Database</a>).</li>
           <li><strong>Search enhancements</strong> — hybrid search (combining vector and keyword search) and <strong>rerankers</strong> that re-score the top results for higher precision.</li>
         </ul>
         <p>We build a complete RAG pipeline in code in <a href="build-rag-app.html">Build a RAG App From Scratch</a>.</p>
@@ -212,7 +212,7 @@
 
         <nav class="next-article" aria-label="Next article">
           <span>Next up</span>
-          <a href="build-rag-app.html">Build a RAG App From Scratch →</a>
+          <a href="vector-databases.html">Choosing a Vector Database →</a>
         </nav>
       </div>
     </article>

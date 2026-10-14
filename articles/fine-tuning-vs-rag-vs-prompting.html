@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fine-Tuning vs. RAG vs. Prompting — BeAIExpert</title>
+  <meta name="description" content="When to use prompting, retrieval-augmented generation or fine-tuning to customize an AI model — what each one changes, costs and is good at, with a decision framework.">
+  <link rel="canonical" href="https://beaiexpert.com/articles/fine-tuning-vs-rag-vs-prompting.html">
+  <meta property="og:title" content="Fine-Tuning vs. RAG vs. Prompting">
+  <meta property="og:type" content="article">
+  <meta name="theme-color" content="#4f46e5">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="progress" aria-hidden="true"><div class="progress__bar"></div></div>
+
+  <header class="nav">
+    <div class="container nav__inner">
+      <a href="../" class="brand" aria-label="BeAIExpert home">
+        <img src="../assets/favicon.svg" alt="" width="32" height="32">
+        <span>Be<strong>AI</strong>Expert</span>
+      </a>
+      <button class="nav__toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <nav id="nav-links" class="nav__links">
+        <a href="./">Articles</a>
+        <a href="../#stack">Tech Stack</a>
+        <a href="../#roadmap">Roadmap</a>
+        <a href="../#faq">FAQ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <article class="article">
+      <header class="article__head container container--prose">
+        <a href="./" class="back">← All articles</a>
+        <span class="tag tag--dev">Development</span>
+        <h1>Fine-Tuning vs. RAG vs. Prompting</h1>
+        <p class="article__dek">Three ways to make a general model work for your problem. They solve different problems, and picking the wrong one is one of the most expensive mistakes in AI projects.</p>
+        <p class="article__meta">13 min read · Intermediate</p>
+      </header>
+
+      <div class="container container--prose prose">
+        <nav class="toc" aria-label="On this page">
+          <strong>On this page</strong>
+          <ol>
+            <li><a href="#problem">The problem: a general model, a specific job</a></li>
+            <li><a href="#what-changes">What each one actually changes</a></li>
+            <li><a href="#prompting">Prompting: always start here</a></li>
+            <li><a href="#rag">RAG: when the model needs knowledge it doesn't have</a></li>
+            <li><a href="#fine-tuning">Fine-tuning: when you need to change behavior</a></li>
+            <li><a href="#myth">The biggest myth: "fine-tune it on our documents"</a></li>
+            <li><a href="#combine">Combining them</a></li>
+            <li><a href="#decide">A decision framework</a></li>
+            <li><a href="#takeaways">Key takeaways</a></li>
+          </ol>
+        </nav>
+
+        <h2 id="problem">The problem: a general model, a specific job</h2>
+        <p>Foundation models are generalists. Your application needs a specialist: one that knows your products, follows your format, uses your tone and handles your edge cases. There are three main ways to close that gap:</p>
+        <ul>
+          <li><strong>Prompting</strong> — tell the model what to do, and show it, in the input.</li>
+          <li><strong>Retrieval-augmented generation (RAG)</strong> — automatically fetch relevant information and add it to the input.</li>
+          <li><strong>Fine-tuning</strong> — continue training the model on your own examples, changing its weights.</li>
+        </ul>
+        <p>The most important insight is that these are not three levels of the same thing. <strong>They change different things.</strong></p>
+
+        <h2 id="what-changes">What each one actually changes</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th></th><th>Prompting</th><th>RAG</th><th>Fine-tuning</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Changes</strong></td><td>The instructions</td><td>The knowledge available at answer time</td><td>The model's learned behavior</td></tr>
+              <tr><td><strong>Best for</strong></td><td>Task definition, format, tone, rules</td><td>Facts: private, large or frequently changing</td><td>Consistent style/format, narrow skills, smaller and cheaper models</td></tr>
+              <tr><td><strong>Time to first result</strong></td><td>Minutes</td><td>Days</td><td>Days to weeks</td></tr>
+              <tr><td><strong>Data needed</strong></td><td>A few examples</td><td>Your documents</td><td>Hundreds to thousands of high-quality examples</td></tr>
+              <tr><td><strong>Updating</strong></td><td>Edit the prompt</td><td>Update the documents</td><td>Retrain</td></tr>
+              <tr><td><strong>Can cite sources</strong></td><td>Only what's in the prompt</td><td>Yes</td><td>No</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 id="prompting">Prompting: always start here</h2>
+        <p>Instructions, context and a few examples in the prompt. (See <a href="prompt-engineering.html">Prompt Engineering That Actually Works</a>.)</p>
+        <ul>
+          <li><strong>Pros:</strong> instant iteration, no training, no extra infrastructure, works with the most capable models, easy to change.</li>
+          <li><strong>Cons:</strong> limited by the context window; long prompts add cost and latency on every request (prompt caching, offered by many providers, reduces this); can't add large amounts of knowledge.</li>
+        </ul>
+        <p>Modern models are strong instruction-followers, and a surprising number of projects never need anything more than a well-designed prompt plus good examples.</p>
+
+        <h2 id="rag">RAG: when the model needs knowledge it doesn't have</h2>
+        <p>Search your documents for the passages relevant to each request and include them in the prompt. (See <a href="build-rag-app.html">Build a RAG App From Scratch</a>.)</p>
+        <ul>
+          <li><strong>Pros:</strong> handles huge and changing knowledge bases; updates are instant (just re-index a document); answers can cite sources, which builds trust and makes errors traceable; access control can be enforced per user.</li>
+          <li><strong>Cons:</strong> more moving parts (parsing, chunking, embeddings, search); answer quality is capped by retrieval quality.</li>
+        </ul>
+        <p><strong>Choose RAG for:</strong> customer support over product docs, internal knowledge assistants, legal or policy Q&amp;A, anything where facts change or must be verifiable.</p>
+
+        <h2 id="fine-tuning">Fine-tuning: when you need to change behavior</h2>
+        <p>Train the model further on input → ideal-output examples, so the desired behavior becomes built in.</p>
+        <ul>
+          <li><strong>Pros:</strong> very consistent format and style; shorter prompts (the instructions are "baked in"); can make a <em>small, cheap, fast</em> model perform like a much larger one on a narrow task; teaches skills hard to describe in words.</li>
+          <li><strong>Cons:</strong> needs a good dataset (the most underestimated cost); training and evaluation take time; every change means retraining; can degrade general abilities; not available for every model.</li>
+        </ul>
+        <p>Modern fine-tuning is often done with parameter-efficient methods like <strong>LoRA</strong>, which train a small set of extra weights instead of the whole model — far cheaper, and practical on a single GPU for open-weight models. Some model providers also offer fine-tuning as a managed service.</p>
+        <p><strong>Choose fine-tuning for:</strong> strict output formats at high volume, a distinctive brand voice, specialized classification or extraction, or cutting cost and latency by moving a well-defined task to a smaller model.</p>
+
+        <h2 id="myth">The biggest myth: "fine-tune it on our documents"</h2>
+        <p>A very common plan is to fine-tune a model on company documents so it "knows" them. This usually disappoints:</p>
+        <ul>
+          <li>Fine-tuning is good at teaching <strong>patterns and behavior</strong>, but unreliable at storing <strong>specific facts</strong> that the model can then recall accurately.</li>
+          <li>The model can't tell you <em>where</em> an answer came from, so you can't verify it.</li>
+          <li>When a document changes, the model is out of date until you retrain.</li>
+          <li>There's no way to stop one user from extracting information they shouldn't see.</li>
+        </ul>
+        <div class="callout">
+          <strong>Rule of thumb:</strong> RAG for <em>knowledge</em>, fine-tuning for <em>behavior</em>, prompting for <em>everything you can</em>.
+        </div>
+
+        <h2 id="combine">Combining them</h2>
+        <p>The approaches aren't exclusive — mature systems often use all three:</p>
+        <ul>
+          <li>A <strong>prompt</strong> defines the task and rules.</li>
+          <li><strong>RAG</strong> supplies up-to-date facts for each request.</li>
+          <li>A <strong>fine-tuned</strong> model answers in the exact format and voice required, or does the job at lower cost.</li>
+        </ul>
+        <p>For example, a support assistant might use a small fine-tuned model that reliably produces the company's response format, with RAG pulling in the relevant help-center articles for each ticket.</p>
+
+        <h2 id="decide">A decision framework</h2>
+        <ol>
+          <li><strong>Can a strong model do the task well with a good prompt and examples?</strong> Build a small test set and find out. If yes — ship it.</li>
+          <li><strong>Are failures caused by missing or outdated knowledge?</strong> Add RAG.</li>
+          <li><strong>Are failures about format, style or consistency</strong> that prompting can't fix — or is the task well-defined, high-volume and too expensive? Consider fine-tuning, once you have a test set to prove it helps.</li>
+          <li><strong>Re-measure after every change.</strong> Each step adds cost and complexity; keep it only if it measurably improves results. (See <a href="evaluating-llm-apps.html">Evaluating LLM Applications</a>.)</li>
+        </ol>
+        <p>Notice what drives every step: <strong>diagnosing why outputs fail</strong>. The fix for "it doesn't know our refund policy" (RAG) is completely different from the fix for "it ignores our response template" (better prompting, then perhaps fine-tuning).</p>
+
+        <h2 id="takeaways">Key takeaways</h2>
+        <ul class="checks">
+          <li>Prompting changes instructions, RAG changes available knowledge, fine-tuning changes behavior.</li>
+          <li>Start with prompting — it's fastest and often enough.</li>
+          <li>Use RAG for private, large or changing facts, especially when sources matter.</li>
+          <li>Use fine-tuning for consistent behavior or to make smaller models viable — not to store facts.</li>
+          <li>Combine them when needed, and let measured failures guide each step.</li>
+        </ul>
+
+        <nav class="next-article" aria-label="Next article">
+          <span>Next up</span>
+          <a href="ai-agents.html">Building AI Agents with Tool Use →</a>
+        </nav>
+      </div>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <a href="../" class="brand">
+        <img src="../assets/favicon.svg" alt="" width="28" height="28">
+        <span>Be<strong>AI</strong>Expert</span>
+      </a>
+      <nav class="footer__links" aria-label="Footer">
+        <a href="./">Articles</a>
+        <a href="ai-tech-stack.html">Tech Stack</a>
+        <a href="../#faq">FAQ</a>
+        <a href="mailto:hello@beaiexpert.com">Contact</a>
+      </nav>
+      <p class="footer__copy">© <span id="year">2026</span> BeAIExpert.com · Free AI education for everyone.</p>
+    </div>
+  </footer>
+
+  <script src="../assets/main.js" defer></script>
+</body>
+</html>

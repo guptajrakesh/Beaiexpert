@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Embeddings Explained: How AI Understands Meaning — BeAIExpert</title>
+  <meta name="description" content="What embeddings are, how they turn words and documents into vectors that capture meaning, how similarity is measured, and where they power search, RAG, recommendations and more.">
+  <link rel="canonical" href="https://beaiexpert.com/articles/embeddings.html">
+  <meta property="og:title" content="Embeddings Explained: How AI Understands Meaning">
+  <meta property="og:type" content="article">
+  <meta name="theme-color" content="#4f46e5">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="progress" aria-hidden="true"><div class="progress__bar"></div></div>
+
+  <header class="nav">
+    <div class="container nav__inner">
+      <a href="../" class="brand" aria-label="BeAIExpert home">
+        <img src="../assets/favicon.svg" alt="" width="32" height="32">
+        <span>Be<strong>AI</strong>Expert</span>
+      </a>
+      <button class="nav__toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <nav id="nav-links" class="nav__links">
+        <a href="./">Articles</a>
+        <a href="../#stack">Tech Stack</a>
+        <a href="../#roadmap">Roadmap</a>
+        <a href="../#faq">FAQ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <article class="article">
+      <header class="article__head container container--prose">
+        <a href="./" class="back">← All articles</a>
+        <span class="tag tag--fundamentals">Fundamentals</span>
+        <h1>Embeddings Explained: How AI Understands Meaning</h1>
+        <p class="article__dek">Embeddings are the quiet workhorse of modern AI — they let computers compare <em>meaning</em> instead of matching words. Here's how they work, built up from a simple intuition.</p>
+        <p class="article__meta">12 min read · Beginner</p>
+      </header>
+
+      <div class="container container--prose prose">
+        <nav class="toc" aria-label="On this page">
+          <strong>On this page</strong>
+          <ol>
+            <li><a href="#problem">The problem: computers don't understand words</a></li>
+            <li><a href="#intuition">The intuition: a map of meaning</a></li>
+            <li><a href="#learned">Where the numbers come from</a></li>
+            <li><a href="#similarity">Measuring similarity</a></li>
+            <li><a href="#try-it">Try it yourself</a></li>
+            <li><a href="#uses">What embeddings are used for</a></li>
+            <li><a href="#choosing">Choosing an embedding model</a></li>
+            <li><a href="#pitfalls">Common pitfalls</a></li>
+            <li><a href="#takeaways">Key takeaways</a></li>
+          </ol>
+        </nav>
+
+        <h2 id="problem">The problem: computers don't understand words</h2>
+        <p>To a computer, the words <em>"car"</em> and <em>"automobile"</em> are just different sequences of characters. Traditional keyword search treats them as unrelated: search for "car insurance" and a page about "automobile coverage" won't match, even though it's exactly what you want.</p>
+        <p>What we need is a way to represent text so that <strong>things with similar meaning look similar to the computer</strong>. That representation is called an <strong>embedding</strong>.</p>
+
+        <h2 id="intuition">The intuition: a map of meaning</h2>
+        <p>Imagine placing every word on a map, so that words with related meanings sit close together. Fruits cluster in one region, vehicles in another, emotions in a third. On this map, "car" and "automobile" would be almost on top of each other, "truck" nearby, and "banana" far away.</p>
+        <p>Any position on a map can be described by coordinates — say, (latitude, longitude). An embedding is exactly that: <strong>a list of coordinates that describes where a piece of text sits on a map of meaning</strong>.</p>
+        <p>The twist is that two dimensions aren't nearly enough to capture all the ways meanings can relate. Real embeddings use hundreds or thousands of dimensions:</p>
+        <pre><code>"The cat sat on the mat"  →  [0.021, -0.113, 0.087, 0.004, ..., -0.052]
+                               (e.g. 384, 768, 1536 or 3072 numbers)</code></pre>
+        <p>You can't visualize 768 dimensions, but the math works the same as on a 2D map: close points mean similar meaning.</p>
+
+        <div class="callout">
+          <strong>Key idea:</strong> an embedding is a list of numbers (a <em>vector</em>) that represents the meaning of some text. Similar meanings → nearby vectors.
+        </div>
+
+        <h2 id="learned">Where the numbers come from</h2>
+        <p>Nobody hand-designs these coordinates. They're <strong>learned</strong> by a neural network called an <strong>embedding model</strong>, trained on large amounts of text.</p>
+        <p>Early approaches like <strong>word2vec</strong> (2013) learned one vector per word using a simple insight: <em>words that appear in similar contexts have similar meanings</em>. "Coffee" and "tea" both show up near "cup", "drink" and "hot", so they end up with similar vectors.</p>
+        <p>Modern embedding models are transformers (the same architecture behind <a href="how-llms-work.html">large language models</a>) and they embed whole sentences, paragraphs or documents, not just single words. They're commonly trained with <strong>contrastive learning</strong>: the model is shown pairs of texts that belong together (a question and its answer, a title and its article) and pairs that don't, and it learns to pull matching pairs together and push mismatched ones apart.</p>
+        <p>Because they read the whole passage, modern models understand context: "bank" in "river bank" and "bank account" gets different representations.</p>
+
+        <h2 id="similarity">Measuring similarity</h2>
+        <p>Once text is turned into vectors, "how similar are these two texts?" becomes "how close are these two vectors?". There are three common ways to measure it:</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Measure</th><th>What it compares</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Cosine similarity</strong></td><td>The angle between two vectors</td><td>The most common choice. Ranges from −1 to 1; higher means more similar. Ignores vector length.</td></tr>
+              <tr><td><strong>Dot product</strong></td><td>Angle and length together</td><td>Fast. Equals cosine similarity when vectors are normalized to length 1.</td></tr>
+              <tr><td><strong>Euclidean distance</strong></td><td>Straight-line distance</td><td>Lower means more similar. Gives the same ranking as cosine for normalized vectors.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Here's cosine similarity in a few lines of Python:</p>
+        <pre><code>import numpy as np
+
+def cosine_similarity(a, b):
+    return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))</code></pre>
+        <p>In practice, most systems <strong>normalize</strong> vectors to length 1 up front, so similarity is just a fast dot product. Always use the measure the embedding model was trained for — the model's documentation will say.</p>
+
+        <h2 id="try-it">Try it yourself</h2>
+        <p>With the free, open-source <code>sentence-transformers</code> library you can see embeddings working on your own laptop:</p>
+        <pre><code>pip install sentence-transformers</code></pre>
+        <pre><code>from sentence_transformers import SentenceTransformer
+
+model = SentenceTransformer("all-MiniLM-L6-v2")   # small, fast, runs on CPU
+
+sentences = [
+    "How do I reset my password?",
+    "I forgot my login credentials.",
+    "What's the weather like tomorrow?",
+]
+vectors = model.encode(sentences, normalize_embeddings=True)
+print(vectors.shape)          # (3, 384): three sentences, 384 numbers each
+
+similarity = vectors @ vectors.T   # dot products = cosine similarities
+print(similarity.round(2))</code></pre>
+        <p>You'll see that the first two sentences score far higher with each other than either does with the weather question — even though "reset my password" and "forgot my login credentials" share no important words. That's semantic understanding in action.</p>
+
+        <h2 id="uses">What embeddings are used for</h2>
+        <ul>
+          <li><strong>Semantic search</strong> — find documents by meaning, not exact keywords.</li>
+          <li><strong>Retrieval-augmented generation (RAG)</strong> — find the passages an LLM needs to answer a question. See <a href="build-rag-app.html">Build a RAG App From Scratch</a>.</li>
+          <li><strong>Recommendations</strong> — "more like this" for articles, products or songs.</li>
+          <li><strong>Clustering &amp; topic discovery</strong> — group thousands of support tickets or reviews by theme automatically.</li>
+          <li><strong>Classification</strong> — train a small, cheap classifier on top of embeddings instead of fine-tuning a large model.</li>
+          <li><strong>Deduplication</strong> — spot near-duplicate questions, records or documents.</li>
+          <li><strong>Anomaly detection</strong> — flag items far from everything else.</li>
+        </ul>
+        <p>Embeddings aren't limited to text, either. Multimodal models such as <strong>CLIP</strong> place images and text in the <em>same</em> space, which is how you can search a photo library by typing "dog on a beach".</p>
+
+        <h2 id="choosing">Choosing an embedding model</h2>
+        <p>There are many embedding models — open-source ones you run yourself and commercial ones available through APIs from the major AI providers. The public <strong>MTEB</strong> (Massive Text Embedding Benchmark) leaderboard compares them across many tasks and is a good starting point. When choosing, consider:</p>
+        <ul>
+          <li><strong>Quality on your data</strong> — benchmarks are a guide, but test with your own queries and documents.</li>
+          <li><strong>Dimensions</strong> — more dimensions can capture more nuance but cost more storage and slower search. Some models support shortening vectors with little quality loss.</li>
+          <li><strong>Max input length</strong> — how much text one embedding can cover.</li>
+          <li><strong>Languages</strong> — multilingual models can match a question in Hindi to a document in English.</li>
+          <li><strong>Hosting</strong> — API convenience vs. running locally for privacy and cost.</li>
+        </ul>
+
+        <h2 id="pitfalls">Common pitfalls</h2>
+        <ul>
+          <li><strong>Mixing models.</strong> Vectors from different embedding models live in different, incompatible spaces. If you switch models, you must re-embed everything.</li>
+          <li><strong>Embedding text that's too long.</strong> One vector for a whole book blurs everything together. Split long documents into chunks.</li>
+          <li><strong>Ignoring exact matches.</strong> Embeddings can miss precise identifiers like part numbers, error codes or names. Combining them with keyword search ("hybrid search") fixes this.</li>
+          <li><strong>Trusting scores as absolute.</strong> A similarity of 0.6 means different things for different models. Use scores to rank results, and tune any cut-off thresholds on real data.</li>
+        </ul>
+
+        <h2 id="takeaways">Key takeaways</h2>
+        <ul class="checks">
+          <li>An embedding is a vector of numbers that represents meaning.</li>
+          <li>Similar meanings produce nearby vectors, so meaning can be compared with math.</li>
+          <li>Embedding models learn these vectors from data, often with contrastive training.</li>
+          <li>Cosine similarity (or dot product on normalized vectors) is the standard comparison.</li>
+          <li>Embeddings power semantic search, RAG, recommendations, clustering and more.</li>
+          <li>Never mix vectors from different models, and chunk long documents.</li>
+        </ul>
+
+        <nav class="next-article" aria-label="Next article">
+          <span>Next up</span>
+          <a href="prompt-engineering.html">Prompt Engineering That Actually Works →</a>
+        </nav>
+      </div>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <a href="../" class="brand">
+        <img src="../assets/favicon.svg" alt="" width="28" height="28">
+        <span>Be<strong>AI</strong>Expert</span>
+      </a>
+      <nav class="footer__links" aria-label="Footer">
+        <a href="./">Articles</a>
+        <a href="ai-tech-stack.html">Tech Stack</a>
+        <a href="../#faq">FAQ</a>
+        <a href="mailto:hello@beaiexpert.com">Contact</a>
+      </nav>
+      <p class="footer__copy">© <span id="year">2026</span> BeAIExpert.com · Free AI education for everyone.</p>
+    </div>
+  </footer>
+
+  <script src="../assets/main.js" defer></script>
+</body>
+</html>
