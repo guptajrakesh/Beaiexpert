@@ -20,7 +20,7 @@
   }
 
   // Reveal-on-scroll
-  var targets = document.querySelectorAll(".card, .path, .steps li, .split > div, details, .cta");
+  var targets = document.querySelectorAll(".card, .article-card, .steps li, .split > div, details, .cta");
   if ("IntersectionObserver" in window) {
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
@@ -36,43 +36,53 @@
     });
   }
 
-  // Waitlist signup. Static hosting has no backend, so set FORM_ENDPOINT to a
-  // form service URL (e.g. Formspree) to collect signups; until then it falls
-  // back to opening the visitor's email client.
-  var FORM_ENDPOINT = "";
-  var form = document.getElementById("signup");
-  var msg = document.getElementById("signup-msg");
-  if (form) {
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
-      var email = form.email.value.trim();
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        msg.textContent = "Please enter a valid email address.";
-        form.email.focus();
-        return;
-      }
-      if (!FORM_ENDPOINT) {
-        window.location.href =
-          "mailto:hello@beaiexpert.com?subject=" +
-          encodeURIComponent("Join the BeAIExpert waitlist") +
-          "&body=" + encodeURIComponent("Please add " + email + " to the waitlist.");
-        msg.textContent = "Opening your email app to confirm your spot…";
-        return;
-      }
-      msg.textContent = "Submitting…";
-      fetch(FORM_ENDPOINT, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({ email: email })
-      })
-        .then(function (res) {
-          if (!res.ok) throw new Error(res.status);
-          form.reset();
-          msg.textContent = "You're on the list! Watch your inbox. 🎉";
-        })
-        .catch(function () {
-          msg.textContent = "Something went wrong. Please email hello@beaiexpert.com.";
+  // Article category filter (articles index). Honors #fundamentals etc. in the URL.
+  var filters = document.querySelectorAll(".filter");
+  var cards = document.querySelectorAll("#article-list .article-card");
+  function applyFilter(name) {
+    filters.forEach(function (btn) {
+      var active = btn.dataset.filter === name;
+      btn.classList.toggle("is-active", active);
+      btn.setAttribute("aria-pressed", String(active));
+    });
+    cards.forEach(function (card) {
+      card.hidden = name !== "all" && card.dataset.category !== name;
+    });
+  }
+  if (filters.length) {
+    filters.forEach(function (btn) {
+      btn.addEventListener("click", function () { applyFilter(btn.dataset.filter); });
+    });
+    var hash = location.hash.slice(1);
+    var known = Array.prototype.some.call(filters, function (b) { return b.dataset.filter === hash; });
+    if (known) applyFilter(hash);
+  }
+
+  // Reading progress bar (article pages)
+  var bar = document.querySelector(".progress__bar");
+  if (bar) {
+    var update = function () {
+      var max = document.documentElement.scrollHeight - window.innerHeight;
+      bar.style.width = (max > 0 ? (window.scrollY / max) * 100 : 0) + "%";
+    };
+    window.addEventListener("scroll", update, { passive: true });
+    update();
+  }
+
+  // Copy buttons on code blocks
+  if (navigator.clipboard) {
+    document.querySelectorAll(".prose pre").forEach(function (pre) {
+      var btn = document.createElement("button");
+      btn.className = "copy-btn";
+      btn.type = "button";
+      btn.textContent = "Copy";
+      btn.addEventListener("click", function () {
+        navigator.clipboard.writeText(pre.querySelector("code").innerText).then(function () {
+          btn.textContent = "Copied!";
+          setTimeout(function () { btn.textContent = "Copy"; }, 1500);
         });
+      });
+      pre.appendChild(btn);
     });
   }
 })();

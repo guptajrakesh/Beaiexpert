@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Articles — BeAIExpert</title>
+  <meta name="description" content="Free, in-depth articles on AI fundamentals, the AI tech stack and AI development.">
+  <link rel="canonical" href="https://beaiexpert.com/articles/">
+  <meta name="theme-color" content="#4f46e5">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="nav">
+    <div class="container nav__inner">
+      <a href="../" class="brand" aria-label="BeAIExpert home">
+        <img src="../assets/favicon.svg" alt="" width="32" height="32">
+        <span>Be<strong>AI</strong>Expert</span>
+      </a>
+      <button class="nav__toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <nav id="nav-links" class="nav__links">
+        <a href="./" aria-current="page">Articles</a>
+        <a href="../#stack">Tech Stack</a>
+        <a href="../#roadmap">Roadmap</a>
+        <a href="../#faq">FAQ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="page-head">
+      <div class="container">
+        <p class="eyebrow">Articles</p>
+        <h1>Learn AI, one deep dive at a time</h1>
+        <p class="lead lead--left">Every article is free and written to be understood — from first principles to production code.</p>
+        <div class="filters" role="group" aria-label="Filter by category">
+          <button class="filter is-active" data-filter="all" aria-pressed="true">All</button>
+          <button class="filter" data-filter="fundamentals" aria-pressed="false">Fundamentals</button>
+          <button class="filter" data-filter="tech-stack" aria-pressed="false">Tech Stack</button>
+          <button class="filter" data-filter="development" aria-pressed="false">Development</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--tight">
+      <div class="container">
+        <div class="grid grid--3" id="article-list">
+          <a class="article-card" href="how-llms-work.html" data-category="fundamentals">
+            <span class="tag tag--fundamentals">Fundamentals</span>
+            <h3>How Large Language Models Actually Work</h3>
+            <p>Tokens, embeddings, attention and next-token prediction — the full journey from your prompt to the model's answer.</p>
+            <span class="article-card__meta">14 min read · Beginner</span>
+          </a>
+          <a class="article-card" href="ai-tech-stack.html" data-category="tech-stack">
+            <span class="tag tag--stack">Tech Stack</span>
+            <h3>The Modern AI Tech Stack, Layer by Layer</h3>
+            <p>From GPUs and foundation models to vector databases, orchestration and observability — what each layer does and when you need it.</p>
+            <span class="article-card__meta">16 min read · Intermediate</span>
+          </a>
+          <a class="article-card" href="build-rag-app.html" data-category="development">
+            <span class="tag tag--dev">Development</span>
+            <h3>Build a RAG App From Scratch</h3>
+            <p>Make an AI answer questions about your own documents: chunking, embeddings, retrieval and grounded generation, with working Python.</p>
+            <span class="article-card__meta">18 min read · Intermediate</span>
+          </a>
+        </div>
+
+        <div class="coming-soon">
+          <h2>Coming soon</h2>
+          <ul>
+            <li><span class="tag tag--fundamentals">Fundamentals</span> Embeddings Explained: How AI Understands Meaning</li>
+            <li><span class="tag tag--fundamentals">Fundamentals</span> Prompt Engineering That Actually Works</li>
+            <li><span class="tag tag--stack">Tech Stack</span> Choosing a Vector Database</li>
+            <li><span class="tag tag--dev">Development</span> Building AI Agents with Tool Use</li>
+            <li><span class="tag tag--dev">Development</span> Evaluating LLM Applications</li>
+            <li><span class="tag tag--dev">Development</span> Fine-Tuning vs. RAG vs. Prompting</li>
+          </ul>
+          <p>Want something explained? <a href="mailto:hello@beaiexpert.com?subject=Topic%20suggestion">Suggest a topic</a>.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <a href="../" class="brand">
+        <img src="../assets/favicon.svg" alt="" width="28" height="28">
+        <span>Be<strong>AI</strong>Expert</span>
+      </a>
+      <nav class="footer__links" aria-label="Footer">
+        <a href="./">Articles</a>
+        <a href="ai-tech-stack.html">Tech Stack</a>
+        <a href="../#faq">FAQ</a>
+        <a href="mailto:hello@beaiexpert.com">Contact</a>
+      </nav>
+      <p class="footer__copy">© <span id="year">2026</span> BeAIExpert.com · Free AI education for everyone.</p>
+    </div>
+  </footer>
+
+  <script src="../assets/main.js" defer></script>
+</body>
+</html>

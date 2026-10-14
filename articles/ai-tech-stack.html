@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Modern AI Tech Stack, Layer by Layer — BeAIExpert</title>
+  <meta name="description" content="Compute, models, data and retrieval, orchestration, serving, evaluation and applications: an in-depth guide to every layer of the modern AI tech stack.">
+  <link rel="canonical" href="https://beaiexpert.com/articles/ai-tech-stack.html">
+  <meta property="og:title" content="The Modern AI Tech Stack, Layer by Layer">
+  <meta property="og:type" content="article">
+  <meta name="theme-color" content="#4f46e5">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="progress" aria-hidden="true"><div class="progress__bar"></div></div>
+
+  <header class="nav">
+    <div class="container nav__inner">
+      <a href="../" class="brand" aria-label="BeAIExpert home">
+        <img src="../assets/favicon.svg" alt="" width="32" height="32">
+        <span>Be<strong>AI</strong>Expert</span>
+      </a>
+      <button class="nav__toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <nav id="nav-links" class="nav__links">
+        <a href="./">Articles</a>
+        <a href="../#stack">Tech Stack</a>
+        <a href="../#roadmap">Roadmap</a>
+        <a href="../#faq">FAQ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <article class="article">
+      <header class="article__head container container--prose">
+        <a href="./" class="back">← All articles</a>
+        <span class="tag tag--stack">Tech Stack</span>
+        <h1>The Modern AI Tech Stack, Layer by Layer</h1>
+        <p class="article__dek">Every AI product — from a simple chatbot to an autonomous agent — is assembled from the same set of layers. Learn what each one does, the main tools in it, and when you actually need it.</p>
+        <p class="article__meta">16 min read · Intermediate</p>
+      </header>
+
+      <div class="container container--prose prose">
+        <nav class="toc" aria-label="On this page">
+          <strong>On this page</strong>
+          <ol>
+            <li><a href="#overview">The stack at a glance</a></li>
+            <li><a href="#compute">Layer 1: Compute</a></li>
+            <li><a href="#models">Layer 2: Models</a></li>
+            <li><a href="#data">Layer 3: Data &amp; retrieval</a></li>
+            <li><a href="#orchestration">Layer 4: Orchestration</a></li>
+            <li><a href="#serving">Layer 5: Serving &amp; inference</a></li>
+            <li><a href="#ops">Layer 6: Evaluation, observability &amp; safety</a></li>
+            <li><a href="#apps">Layer 7: Applications &amp; interfaces</a></li>
+            <li><a href="#examples">Three example stacks</a></li>
+            <li><a href="#choosing">How to choose</a></li>
+          </ol>
+        </nav>
+
+        <h2 id="overview">The stack at a glance</h2>
+        <p>When people say "AI tech stack", they mean the full set of technologies needed to take a raw model and turn it into a reliable product. It helps to think of it as layers, where each layer depends on the ones below it:</p>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Layer</th><th>Job</th><th>Example tools</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>7. Applications</strong></td><td>What users touch</td><td>Web &amp; mobile apps, chat UIs, IDE plugins</td></tr>
+              <tr><td><strong>6. Eval &amp; observability</strong></td><td>Measure quality, cost, safety</td><td>Langfuse, LangSmith, Arize Phoenix, promptfoo</td></tr>
+              <tr><td><strong>5. Serving</strong></td><td>Run models fast and cheaply</td><td>Hosted APIs, vLLM, TGI, Ollama, llama.cpp</td></tr>
+              <tr><td><strong>4. Orchestration</strong></td><td>Prompts, tools, agents, workflows</td><td>Provider SDKs, LangChain, LlamaIndex, MCP</td></tr>
+              <tr><td><strong>3. Data &amp; retrieval</strong></td><td>Feed the model the right knowledge</td><td>Embedding models, pgvector, Pinecone, Qdrant, Weaviate</td></tr>
+              <tr><td><strong>2. Models</strong></td><td>The "brain"</td><td>Claude, GPT, Gemini; open-weight Llama, Mistral, Qwen, DeepSeek</td></tr>
+              <tr><td><strong>1. Compute</strong></td><td>Raw processing power</td><td>NVIDIA GPUs, Google TPUs, AWS / Azure / GCP</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout--tip">
+          <strong>Good news:</strong> you rarely need to build every layer yourself. Most teams start by renting layers 1–2 through a model API and focus their effort on layers 3, 4, 6 and 7 — that's where product quality is won or lost.
+        </div>
+
+        <h2 id="compute">Layer 1: Compute</h2>
+        <p>AI models are, at heart, enormous amounts of matrix multiplication. <strong>GPUs</strong> (graphics processing units) do thousands of these multiplications in parallel, which is why they power almost all AI. NVIDIA dominates this market, largely thanks to its CUDA software ecosystem; alternatives include AMD GPUs, Google's <strong>TPUs</strong> and custom chips from cloud providers.</p>
+        <p>Two very different workloads use compute:</p>
+        <ul>
+          <li><strong>Training</strong> — creating or fine-tuning a model. Training a frontier model takes thousands of GPUs for weeks or months; fine-tuning a small model can take a single GPU for hours.</li>
+          <li><strong>Inference</strong> — running a trained model to answer requests. This is the ongoing cost of any AI product, and it's driven by model size and the number of tokens processed.</li>
+        </ul>
+        <p><strong>When you care:</strong> only if you self-host models or train/fine-tune them. If you use a hosted API, the provider handles this layer and you pay per token.</p>
+
+        <h2 id="models">Layer 2: Models</h2>
+        <p>The model is the reasoning engine. (New to how they work? Read <a href="how-llms-work.html">How Large Language Models Actually Work</a>.) The first big decision is between two families:</p>
+        <h3>Proprietary models via API</h3>
+        <p>Models like Anthropic's Claude, OpenAI's GPT and Google's Gemini are accessed over the internet. You send text, you get text back, you pay per token.</p>
+        <ul>
+          <li><strong>Pros:</strong> typically the most capable, zero infrastructure, instant start, continuously improved.</li>
+          <li><strong>Cons:</strong> data leaves your servers (check each provider's data policies), per-token costs at scale, less control over model changes.</li>
+        </ul>
+        <h3>Open-weight models</h3>
+        <p>Models like Meta's Llama, Mistral, Qwen and DeepSeek publish their weights, so you can download and run them yourself. The <strong>Hugging Face Hub</strong> is the main place to find them.</p>
+        <ul>
+          <li><strong>Pros:</strong> full control and privacy, can be fine-tuned deeply, no per-token fees (you pay for compute instead), can run offline.</li>
+          <li><strong>Cons:</strong> you operate the infrastructure; the largest open models need serious hardware.</li>
+        </ul>
+        <h3>Beyond text</h3>
+        <p>The model layer also includes specialized models: <strong>embedding models</strong> (turn text into vectors for search — see Layer 3), speech-to-text and text-to-speech, image generation, and <strong>multimodal</strong> models that understand images, documents and audio alongside text.</p>
+        <h3>Customizing models</h3>
+        <p>There are three ways to make a model fit your use case, in order of effort:</p>
+        <ol>
+          <li><strong>Prompting</strong> — instructions and examples in the input. Fastest, cheapest; always start here.</li>
+          <li><strong>Retrieval (RAG)</strong> — inject relevant knowledge at query time. Best for facts that change or are private.</li>
+          <li><strong>Fine-tuning</strong> — further train the model on your examples. Best for consistent style, format or specialized behavior, not for teaching facts.</li>
+        </ol>
+
+        <h2 id="data">Layer 3: Data &amp; retrieval</h2>
+        <p>A model only knows what was in its training data — which is frozen at a cutoff date and doesn't include your company's documents. The data layer fixes that by finding the right information and placing it into the model's context window. This pattern is called <strong>retrieval-augmented generation (RAG)</strong>.</p>
+        <p>Core components:</p>
+        <ul>
+          <li><strong>Ingestion &amp; parsing</strong> — extracting clean text from PDFs, web pages, docs and databases (tools like Unstructured, Docling, or simple custom loaders).</li>
+          <li><strong>Chunking</strong> — splitting documents into passages small enough to retrieve precisely.</li>
+          <li><strong>Embedding models</strong> — converting each chunk into a vector that captures its meaning.</li>
+          <li><strong>Vector databases</strong> — storing those vectors and finding the closest matches to a question quickly. Options range from <strong>pgvector</strong> (an extension for PostgreSQL — great if you already use Postgres) to dedicated databases like <strong>Pinecone</strong>, <strong>Qdrant</strong>, <strong>Weaviate</strong>, <strong>Milvus</strong> and <strong>Chroma</strong>.</li>
+          <li><strong>Search enhancements</strong> — hybrid search (combining vector and keyword search) and <strong>rerankers</strong> that re-score the top results for higher precision.</li>
+        </ul>
+        <p>We build a complete RAG pipeline in code in <a href="build-rag-app.html">Build a RAG App From Scratch</a>.</p>
+
+        <h2 id="orchestration">Layer 4: Orchestration</h2>
+        <p>Orchestration is the "glue code" that turns a single model call into a working system. It covers:</p>
+        <ul>
+          <li><strong>Prompt management</strong> — templates, system instructions and versioning.</li>
+          <li><strong>Chaining &amp; workflows</strong> — multi-step pipelines such as <em>retrieve → draft → check → format</em>.</li>
+          <li><strong>Tool use (function calling)</strong> — letting the model request actions such as searching the web, querying a database or calling an API, with your code executing them.</li>
+          <li><strong>Agents</strong> — loops where the model decides which tools to call, observes the results, and continues until the task is done.</li>
+          <li><strong>Memory</strong> — storing and recalling information across conversations.</li>
+        </ul>
+        <p>Tools in this layer include the official SDKs from model providers (often all you need), frameworks such as <strong>LangChain</strong>, <strong>LangGraph</strong> and <strong>LlamaIndex</strong>, and agent frameworks from the major providers. The <strong>Model Context Protocol (MCP)</strong> is an open standard for connecting AI applications to external tools and data sources, so one integration can work across many AI apps.</p>
+        <div class="callout">
+          <strong>Advice:</strong> frameworks speed up prototypes but add abstraction. Many production teams start with a framework, then replace parts with plain code once they understand exactly what they need. Learn the underlying concepts first — then any framework is easy.
+        </div>
+
+        <h2 id="serving">Layer 5: Serving &amp; inference</h2>
+        <p>If you use a hosted API, serving is handled for you. If you run open-weight models, you need an <strong>inference server</strong> that loads the model onto GPUs and handles many requests efficiently:</p>
+        <ul>
+          <li><strong>vLLM</strong> and Hugging Face <strong>TGI</strong> — high-throughput production servers.</li>
+          <li><strong>Ollama</strong> and <strong>llama.cpp</strong> — simple ways to run models locally on a laptop or desktop.</li>
+          <li><strong>Managed platforms</strong> — cloud services (AWS Bedrock, Azure AI, Google Vertex AI) and specialized hosts that serve open models for you.</li>
+        </ul>
+        <p>Key techniques here include <strong>quantization</strong> (storing weights at lower precision so models fit on smaller hardware), <strong>batching</strong> (processing many requests together), <strong>streaming</strong> responses token-by-token, and <strong>caching</strong> repeated prompt prefixes to cut cost and latency.</p>
+
+        <h2 id="ops">Layer 6: Evaluation, observability &amp; safety</h2>
+        <p>This is the layer beginners skip and experts obsess over. AI output is probabilistic: the same input can produce different outputs, and a prompt tweak that fixes one case can break five others. You need:</p>
+        <ul>
+          <li><strong>Evaluations ("evals")</strong> — a test set of realistic inputs with criteria for good answers, scored automatically (by code or by another model acting as a judge) every time you change something. Tools: promptfoo, Ragas, DeepEval, or a simple script.</li>
+          <li><strong>Observability</strong> — logging every prompt, response, tool call, latency and cost so you can debug real failures. Tools: Langfuse, LangSmith, Arize Phoenix, Helicone, or OpenTelemetry-based tracing.</li>
+          <li><strong>Guardrails &amp; security</strong> — input/output filtering, protection against <em>prompt injection</em> (malicious instructions hidden in content the model reads), PII handling, and limiting what tools an agent can use.</li>
+        </ul>
+
+        <h2 id="apps">Layer 7: Applications &amp; interfaces</h2>
+        <p>Finally, the part users see. Common patterns:</p>
+        <ul>
+          <li><strong>Chat interfaces</strong> — conversational assistants and support bots.</li>
+          <li><strong>Copilots</strong> — AI embedded inside an existing tool (an editor, CRM or spreadsheet).</li>
+          <li><strong>Background automation</strong> — AI processing documents, emails or tickets with no chat at all.</li>
+          <li><strong>Agents</strong> — systems that carry out multi-step tasks with some autonomy.</li>
+        </ul>
+        <p>Popular building blocks: <strong>Streamlit</strong> and <strong>Gradio</strong> for quick Python demos; <strong>Next.js</strong>/React with streaming UI libraries for production web apps; and <strong>FastAPI</strong> for Python backends.</p>
+
+        <h2 id="examples">Three example stacks</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th></th><th>Weekend prototype</th><th>Startup product</th><th>Enterprise / private data</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>Model</strong></td><td>Hosted API</td><td>Hosted API (maybe 2 providers)</td><td>Cloud-hosted API in your cloud account, or self-hosted open-weight</td></tr>
+              <tr><td><strong>Retrieval</strong></td><td>In-memory / Chroma</td><td>pgvector or managed vector DB</td><td>Vector DB + hybrid search + reranker, with access controls</td></tr>
+              <tr><td><strong>Orchestration</strong></td><td>Provider SDK</td><td>SDK + light framework</td><td>Custom workflows, MCP integrations</td></tr>
+              <tr><td><strong>Serving</strong></td><td>Provider</td><td>Provider</td><td>Managed cloud or vLLM on own GPUs</td></tr>
+              <tr><td><strong>Eval &amp; ops</strong></td><td>Manual testing</td><td>Eval suite + tracing</td><td>CI evals, tracing, guardrails, audit logs</td></tr>
+              <tr><td><strong>App</strong></td><td>Streamlit</td><td>Next.js + FastAPI</td><td>Integrated into internal tools</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 id="choosing">How to choose</h2>
+        <ol>
+          <li><strong>Start with the problem, not the tools.</strong> Write down the task, who uses it, and what a "good" answer looks like.</li>
+          <li><strong>Prototype with the best hosted model.</strong> Prove the task is possible before optimizing cost.</li>
+          <li><strong>Build an eval set early.</strong> Even 20–50 real examples will let you compare models and prompts objectively.</li>
+          <li><strong>Add retrieval only when the model needs knowledge it doesn't have.</strong></li>
+          <li><strong>Add complexity only when measurements justify it</strong> — agents, fine-tuning and self-hosting each bring real costs.</li>
+          <li><strong>Optimize last:</strong> smaller models, caching and self-hosting once quality is locked in.</li>
+        </ol>
+
+        <h2>Key takeaways</h2>
+        <ul class="checks">
+          <li>The AI stack has seven layers: compute, models, data, orchestration, serving, eval/ops and applications.</li>
+          <li>Most teams rent compute and models via APIs and differentiate on data, orchestration, evals and UX.</li>
+          <li>Prompting → RAG → fine-tuning is the usual order of customization.</li>
+          <li>Evaluation and observability are what make AI products reliable.</li>
+          <li>Start simple, measure, and add layers only when they earn their place.</li>
+        </ul>
+
+        <nav class="next-article" aria-label="Next article">
+          <span>Next up</span>
+          <a href="build-rag-app.html">Build a RAG App From Scratch →</a>
+        </nav>
+      </div>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <a href="../" class="brand">
+        <img src="../assets/favicon.svg" alt="" width="28" height="28">
+        <span>Be<strong>AI</strong>Expert</span>
+      </a>
+      <nav class="footer__links" aria-label="Footer">
+        <a href="./">Articles</a>
+        <a href="ai-tech-stack.html">Tech Stack</a>
+        <a href="../#faq">FAQ</a>
+        <a href="mailto:hello@beaiexpert.com">Contact</a>
+      </nav>
+      <p class="footer__copy">© <span id="year">2026</span> BeAIExpert.com · Free AI education for everyone.</p>
+    </div>
+  </footer>
+
+  <script src="../assets/main.js" defer></script>
+</body>
+</html>

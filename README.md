@@ -1,6 +1,6 @@
 # BeAIExpert.com
 
-Marketing website for **BeAIExpert** — practical learning paths to go from AI-curious to AI-expert.
+**BeAIExpert** is a free AI education site for everyone: in-depth articles on AI fundamentals, the AI tech stack and AI development.
 
 It is a dependency-free static site (HTML/CSS/JS), deployed to **GitHub Pages** on the custom domain `beaiexpert.com`.
 
@@ -8,9 +8,12 @@ It is a dependency-free static site (HTML/CSS/JS), deployed to **GitHub Pages** 
 
 ```
 index.html          Home page
+articles/index.html Article listing (with category filter)
+articles/*.html     Individual articles
 404.html            Not-found page
-assets/styles.css   Styles (light + dark mode)
-assets/main.js      Mobile nav, scroll reveal, waitlist form
+assets/styles.css   Styles (light + dark mode, article typography)
+assets/main.js      Mobile nav, scroll reveal, filters, reading progress, copy buttons
+sitemap.xml, robots.txt  Search engine indexing
 assets/favicon.svg  Logo / favicon
 CNAME               Custom domain for GitHub Pages
 .github/workflows/pages.yml   Auto-deploy on push
@@ -46,8 +49,8 @@ python3 -m http.server 8000
    Remove any conflicting A/CNAME records (e.g. registrar parking pages). DNS can take up to 24–48 hours to propagate.
 4. *(Recommended)* Verify the domain under your GitHub account → *Settings → Pages → Verified domains* to prevent takeover.
 
-## Waitlist form
+## Adding a new article
 
-GitHub Pages has no backend. By default the form opens the visitor's email client addressed to
-`hello@beaiexpert.com`. To collect signups directly, create a form endpoint (e.g. Formspree,
-Basin, or a Google Apps Script) and set `FORM_ENDPOINT` in `assets/main.js`.
+1. Copy an existing file in `articles/` (e.g. `how-llms-work.html`) and replace the title, description, canonical URL, tag and body.
+2. Add a card for it to `articles/index.html` (set `data-category` to `fundamentals`, `tech-stack` or `development`) and, if it's new, to the "Latest articles" section of `index.html`.
+3. Add its URL to `sitemap.xml`.

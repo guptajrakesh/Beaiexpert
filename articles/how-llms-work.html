@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How Large Language Models Actually Work — BeAIExpert</title>
+  <meta name="description" content="Tokens, embeddings, attention and next-token prediction: a clear, in-depth explanation of how large language models turn your prompt into an answer.">
+  <link rel="canonical" href="https://beaiexpert.com/articles/how-llms-work.html">
+  <meta property="og:title" content="How Large Language Models Actually Work">
+  <meta property="og:type" content="article">
+  <meta name="theme-color" content="#4f46e5">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="progress" aria-hidden="true"><div class="progress__bar"></div></div>
+
+  <header class="nav">
+    <div class="container nav__inner">
+      <a href="../" class="brand" aria-label="BeAIExpert home">
+        <img src="../assets/favicon.svg" alt="" width="32" height="32">
+        <span>Be<strong>AI</strong>Expert</span>
+      </a>
+      <button class="nav__toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <nav id="nav-links" class="nav__links">
+        <a href="./">Articles</a>
+        <a href="../#stack">Tech Stack</a>
+        <a href="../#roadmap">Roadmap</a>
+        <a href="../#faq">FAQ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <article class="article">
+      <header class="article__head container container--prose">
+        <a href="./" class="back">← All articles</a>
+        <span class="tag tag--fundamentals">Fundamentals</span>
+        <h1>How Large Language Models Actually Work</h1>
+        <p class="article__dek">From the moment you press Enter to the moment the answer appears — tokens, embeddings, attention and next-token prediction, explained without the hype.</p>
+        <p class="article__meta">14 min read · Beginner · No math required</p>
+      </header>
+
+      <div class="container container--prose prose">
+        <nav class="toc" aria-label="On this page">
+          <strong>On this page</strong>
+          <ol>
+            <li><a href="#big-idea">The big idea in one sentence</a></li>
+            <li><a href="#tokens">Step 1: Text becomes tokens</a></li>
+            <li><a href="#embeddings">Step 2: Tokens become vectors</a></li>
+            <li><a href="#attention">Step 3: Attention — tokens look at each other</a></li>
+            <li><a href="#prediction">Step 4: Predicting the next token</a></li>
+            <li><a href="#training">How a model learns all this</a></li>
+            <li><a href="#context">The context window</a></li>
+            <li><a href="#hallucinations">Why models hallucinate</a></li>
+            <li><a href="#takeaways">Key takeaways</a></li>
+          </ol>
+        </nav>
+
+        <h2 id="big-idea">The big idea in one sentence</h2>
+        <p>A large language model (LLM) is a program that has learned, from enormous amounts of text, to <strong>predict the next piece of text</strong> given everything that came before it — and it does this one small piece at a time, over and over, until a full answer emerges.</p>
+        <p>That's it. Everything impressive an LLM does — writing code, summarizing a contract, explaining physics — comes from doing that one prediction extremely well. The rest of this article explains <em>how</em>.</p>
+
+        <div class="callout">
+          <strong>Mental model:</strong> think of an LLM as the world's most sophisticated autocomplete. Your phone's keyboard guesses the next word from the last few words. An LLM guesses the next piece from <em>thousands</em> of previous pieces, using patterns learned from a large share of the public internet, books and code.
+        </div>
+
+        <h2 id="tokens">Step 1: Text becomes tokens</h2>
+        <p>Computers can't read words — they work with numbers. So the first thing that happens to your prompt is <strong>tokenization</strong>: the text is split into small chunks called <em>tokens</em>, and each token is mapped to an ID number.</p>
+        <p>Tokens are not exactly words. Common words are usually a single token, while rare or long words get split into pieces:</p>
+        <pre><code>"Understanding transformers is fun!"
+
+→ ["Under", "standing", " transform", "ers", " is", " fun", "!"]
+→ [16648, 5646, 5276, 388, 374, 2523, 0]   (IDs are illustrative)</code></pre>
+        <p>A tokenizer has a fixed vocabulary — typically tens of thousands to a few hundred thousand tokens — learned from data so that frequent character sequences get their own token. As a rough rule of thumb for English, <strong>one token ≈ ¾ of a word</strong>, so 1,000 tokens is around 750 words.</p>
+        <p>Why this matters to you: model pricing, speed and limits are all measured in tokens, not words. It also explains some odd failures — a model that "sees" <code>strawberry</code> as two or three chunks can struggle to count its letters.</p>
+
+        <h2 id="embeddings">Step 2: Tokens become vectors (embeddings)</h2>
+        <p>A token ID like <code>2523</code> is just a label; it carries no meaning. So each token ID is looked up in a giant table and converted into an <strong>embedding</strong>: a list of hundreds or thousands of numbers (a <em>vector</em>).</p>
+        <p>These numbers are learned during training, and they end up encoding meaning. Tokens used in similar ways end up with similar vectors. In this "meaning space":</p>
+        <ul>
+          <li><code>cat</code> sits close to <code>dog</code> and far from <code>carburetor</code>.</li>
+          <li>Directions in the space can capture relationships — the classic example being that <em>king − man + woman</em> lands near <em>queen</em>.</li>
+        </ul>
+        <p>The model also adds information about each token's <strong>position</strong>, because "dog bites man" and "man bites dog" contain the same tokens but mean very different things.</p>
+
+        <h2 id="attention">Step 3: Attention — tokens look at each other</h2>
+        <p>Here's the breakthrough behind modern AI. In 2017, researchers at Google published <em>"Attention Is All You Need"</em>, introducing the <strong>transformer</strong> architecture. Almost every major LLM today is a transformer.</p>
+        <p>The key mechanism is <strong>self-attention</strong>. A single token's embedding is ambiguous on its own — "bank" could be a river bank or a financial bank. Attention lets every token gather information from the other tokens around it to refine its meaning.</p>
+        <p>Consider: <em>"The animal didn't cross the street because <strong>it</strong> was too tired."</em> To understand <em>it</em>, the model needs to figure out that <em>it</em> refers to <em>animal</em>, not <em>street</em>. Attention is how it does that.</p>
+        <p>Mechanically, each token produces three vectors:</p>
+        <ul>
+          <li><strong>Query</strong> — "what am I looking for?"</li>
+          <li><strong>Key</strong> — "what do I contain?"</li>
+          <li><strong>Value</strong> — "what information do I pass along if selected?"</li>
+        </ul>
+        <p>Each token compares its query to every other token's key. High matches get high attention weights, and the token blends in those tokens' values. After this step, the vector for <em>it</em> contains information pulled from <em>animal</em>.</p>
+        <p>A transformer runs many attention "heads" in parallel (each can learn to track a different kind of relationship — grammar, references, topic) and stacks dozens of these layers, each followed by a small neural network. As the vectors flow up through the layers, they become richer and more abstract representations of the whole context.</p>
+
+        <div class="callout callout--tip">
+          <strong>Why "large"?</strong> All those tables and layers are made of numbers called <em>parameters</em> (or weights). Modern LLMs have billions to hundreds of billions of them. More parameters, trained on more data, generally means a more capable model — at higher cost to train and run.
+        </div>
+
+        <h2 id="prediction">Step 4: Predicting the next token</h2>
+        <p>After the final layer, the model takes the vector at the <em>last</em> position and converts it into a score for <strong>every token in the vocabulary</strong>. Those scores are turned into probabilities:</p>
+        <pre><code>Prompt: "The capital of France is"
+
+" Paris"     91.2%
+" a"          3.1%
+" the"        1.7%
+" located"    0.9%
+...</code></pre>
+        <p>One token is then chosen, appended to the text, and the <strong>entire process repeats</strong> to produce the next one. This loop — predict, append, repeat — is called <em>autoregressive generation</em>, and it's why answers stream onto your screen word by word.</p>
+        <p>How the token gets chosen is controlled by settings you may have seen:</p>
+        <ul>
+          <li><strong>Temperature</strong> — low values (near 0) make the model pick the most likely tokens, giving focused, consistent output. Higher values flatten the probabilities, giving more varied and creative output.</li>
+          <li><strong>Top-p / top-k</strong> — restrict the choice to only the most likely candidates, cutting off unlikely tokens that might derail the text.</li>
+        </ul>
+        <p>Generation stops when the model produces a special end-of-sequence token or hits a length limit.</p>
+
+        <h2 id="training">How a model learns all this</h2>
+        <p>None of the meaning in embeddings or the patterns in attention is programmed by hand. It's all learned, typically in three stages:</p>
+        <h3>1. Pretraining</h3>
+        <p>The model reads a massive dataset — trillions of tokens of web pages, books, code and more. The task is simple: hide the next token, have the model predict it, measure how wrong it was, and nudge all the parameters slightly to do better (this nudging is called <em>gradient descent</em>). Repeat this an astronomical number of times on large clusters of GPUs.</p>
+        <p>To get good at predicting the next token across all human text, the model is forced to absorb grammar, facts, reasoning patterns, coding conventions and much more. The result is a <strong>base model</strong>: knowledgeable, but it just continues text — ask it a question and it might respond with more questions.</p>
+        <h3>2. Instruction tuning (supervised fine-tuning)</h3>
+        <p>The base model is then trained further on curated examples of instructions paired with high-quality responses. This teaches it to behave like an assistant: answer the question, follow the format, stay on task.</p>
+        <h3>3. Preference training</h3>
+        <p>Finally, the model is refined using feedback about which responses are better. Techniques such as <strong>RLHF</strong> (reinforcement learning from human feedback) and related methods train the model to prefer answers that are more helpful, honest and safe. This stage shapes much of a model's "personality".</p>
+
+        <h2 id="context">The context window</h2>
+        <p>An LLM has no memory between conversations. Everything it knows about your chat is in the <strong>context window</strong>: the maximum number of tokens it can consider at once — your system instructions, the conversation so far, any documents you pasted, and the answer it's writing.</p>
+        <p>Context windows have grown from a few thousand tokens to hundreds of thousands or more. But "fits in the window" doesn't guarantee "used well": models can still overlook details buried in very long inputs, and longer contexts cost more and run slower. This is one reason techniques like <a href="build-rag-app.html">retrieval-augmented generation (RAG)</a> exist — to put only the most relevant information into the window.</p>
+
+        <h2 id="hallucinations">Why models hallucinate</h2>
+        <p>Remember the core job: produce the most plausible next token. Plausible is not the same as true. When a model lacks the right information, it can still generate fluent, confident text that <em>sounds</em> correct — a fake citation, a non-existent API function, a wrong date. This is called a <strong>hallucination</strong>.</p>
+        <p>Practical ways to reduce it:</p>
+        <ul>
+          <li><strong>Ground it</strong> — provide the relevant source documents in the prompt and ask it to answer only from them.</li>
+          <li><strong>Allow uncertainty</strong> — explicitly tell it that "I don't know" is an acceptable answer.</li>
+          <li><strong>Ask for sources</strong> — request quotes or citations from the provided material so you can verify.</li>
+          <li><strong>Use tools</strong> — let the model call a search engine, calculator or database instead of guessing.</li>
+          <li><strong>Verify</strong> — treat important outputs as drafts to check, not final truth.</li>
+        </ul>
+
+        <h2 id="takeaways">Key takeaways</h2>
+        <ul class="checks">
+          <li>LLMs generate text one token at a time by predicting what comes next.</li>
+          <li>Text → tokens → embeddings (vectors that capture meaning).</li>
+          <li>Self-attention lets each token use context from all the others; transformers stack many attention layers.</li>
+          <li>Temperature and sampling settings control how predictable or creative the output is.</li>
+          <li>Models learn through pretraining, then instruction tuning and preference training.</li>
+          <li>The context window is the model's entire working memory.</li>
+          <li>Hallucinations come from optimizing for plausibility — ground, verify and use tools to reduce them.</li>
+        </ul>
+
+        <nav class="next-article" aria-label="Next article">
+          <span>Next up</span>
+          <a href="ai-tech-stack.html">The Modern AI Tech Stack, Layer by Layer →</a>
+        </nav>
+      </div>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <a href="../" class="brand">
+        <img src="../assets/favicon.svg" alt="" width="28" height="28">
+        <span>Be<strong>AI</strong>Expert</span>
+      </a>
+      <nav class="footer__links" aria-label="Footer">
+        <a href="./">Articles</a>
+        <a href="ai-tech-stack.html">Tech Stack</a>
+        <a href="../#faq">FAQ</a>
+        <a href="mailto:hello@beaiexpert.com">Contact</a>
+      </nav>
+      <p class="footer__copy">© <span id="year">2026</span> BeAIExpert.com · Free AI education for everyone.</p>
+    </div>
+  </footer>
+
+  <script src="../assets/main.js" defer></script>
+</body>
+</html>
