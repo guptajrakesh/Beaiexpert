@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The AI Glossary: 60+ Terms Explained — BeAIExpert</title>
+  <meta name="description" content="Plain-English definitions of the most important AI terms — from agents, attention and embeddings to RAG, tokens, transformers and zero-shot — with links to in-depth articles.">
+  <link rel="canonical" href="https://beaiexpert.com/articles/ai-glossary.html">
+  <meta property="og:title" content="The AI Glossary: 60+ Terms Explained">
+  <meta property="og:type" content="article">
+  <meta name="theme-color" content="#4f46e5">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="progress" aria-hidden="true"><div class="progress__bar"></div></div>
+
+  <header class="nav">
+    <div class="container nav__inner">
+      <a href="../" class="brand" aria-label="BeAIExpert home">
+        <img src="../assets/favicon.svg" alt="" width="32" height="32">
+        <span>Be<strong>AI</strong>Expert</span>
+      </a>
+      <button class="nav__toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <nav id="nav-links" class="nav__links">
+        <a href="./">Articles</a>
+        <a href="../#stack">Tech Stack</a>
+        <a href="../#roadmap">Roadmap</a>
+        <a href="../#faq">FAQ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <article class="article">
+      <header class="article__head container container--prose">
+        <a href="./" class="back">← All articles</a>
+        <span class="tag tag--fundamentals">Fundamentals</span>
+        <h1>The AI Glossary: 60+ Terms Explained</h1>
+        <p class="article__dek">A plain-English reference for the words you'll meet when learning AI. Bookmark it — and follow the links to go deeper on any term.</p>
+        <p class="article__meta">Reference · All levels</p>
+      </header>
+
+      <div class="container container--prose prose">
+        <nav class="toc" aria-label="On this page">
+          <strong>On this page</strong>
+          <ol>
+            <li><a href="#a-c">A – C</a></li>
+            <li><a href="#d-f">D – F</a></li>
+            <li><a href="#g-l">G – L</a></li>
+            <li><a href="#m-o">M – O</a></li>
+            <li><a href="#p-r">P – R</a></li>
+            <li><a href="#s-z">S – Z</a></li>
+          </ol>
+        </nav>
+
+        <p>Terms are grouped alphabetically. Where an article explains a term in depth, the definition links to it.</p>
+
+        <h2 id="a-c">A – C</h2>
+        <dl class="glossary">
+          <dt id="agent">Agent</dt>
+          <dd>A system in which an AI model uses tools in a loop — taking actions, observing results and deciding what to do next — until a task is complete. <a href="ai-agents.html">Read more</a>.</dd>
+          <dt id="agi">AGI (Artificial General Intelligence)</dt>
+          <dd>A hypothetical AI able to match or exceed humans across essentially all cognitive tasks. There's no agreed definition or test, and experts disagree on if and when it will arrive.</dd>
+          <dt id="ai">Artificial Intelligence (AI)</dt>
+          <dd>The broad field of building computer systems that perform tasks normally requiring human intelligence, such as understanding language, recognizing images or making decisions.</dd>
+          <dt id="alignment">Alignment</dt>
+          <dd>Research and techniques aimed at making AI systems behave in line with human intentions and values — helpful, honest and harmless.</dd>
+          <dt id="api">API (Application Programming Interface)</dt>
+          <dd>A way for programs to talk to each other. Most AI models are used through an API: your code sends text, the provider's servers return the model's response.</dd>
+          <dt id="attention">Attention (self-attention)</dt>
+          <dd>The mechanism that lets each token in a transformer gather information from other tokens, so meaning depends on context. <a href="how-llms-work.html#attention">Read more</a>.</dd>
+          <dt id="benchmark">Benchmark</dt>
+          <dd>A standard test set used to compare models, e.g. on reasoning, coding or knowledge. Useful but imperfect — always test on your own tasks.</dd>
+          <dt id="bias">Bias</dt>
+          <dd>Systematic unfairness in AI outputs, often learned from biased training data. <a href="responsible-ai.html#bias">Read more</a>.</dd>
+          <dt id="chain-of-thought">Chain-of-thought</dt>
+          <dd>Having a model work through a problem step by step before answering, which improves accuracy on complex tasks. <a href="prompt-engineering.html#reasoning">Read more</a>.</dd>
+          <dt id="chunking">Chunking</dt>
+          <dd>Splitting documents into smaller passages so they can be embedded and retrieved precisely in RAG systems. <a href="build-rag-app.html#chunk">Read more</a>.</dd>
+          <dt id="clip">CLIP</dt>
+          <dd>A model that maps images and text into a shared embedding space, enabling image search by description. <a href="multimodal-ai.html#clip">Read more</a>.</dd>
+          <dt id="context-window">Context window</dt>
+          <dd>The maximum amount of text (in tokens) a model can consider at once — its entire working memory for a request. <a href="how-llms-work.html#context">Read more</a>.</dd>
+          <dt id="cosine-similarity">Cosine similarity</dt>
+          <dd>A measure of how similar two vectors are, based on the angle between them. The standard way to compare embeddings. <a href="embeddings.html#similarity">Read more</a>.</dd>
+        </dl>
+
+        <h2 id="d-f">D – F</h2>
+        <dl class="glossary">
+          <dt id="deep-learning">Deep learning</dt>
+          <dd>Machine learning using neural networks with many layers. The approach behind nearly all modern AI.</dd>
+          <dt id="diffusion">Diffusion model</dt>
+          <dd>A type of generative model that creates images (or video, audio) by starting from random noise and removing it step by step, guided by a prompt. <a href="multimodal-ai.html#generation">Read more</a>.</dd>
+          <dt id="embedding">Embedding</dt>
+          <dd>A vector of numbers representing the meaning of text, images or other data, so similar meanings have nearby vectors. <a href="embeddings.html">Read more</a>.</dd>
+          <dt id="eval">Evaluation (evals)</dt>
+          <dd>Systematic testing of an AI application's outputs against defined criteria, to measure and track quality. <a href="evaluating-llm-apps.html">Read more</a>.</dd>
+          <dt id="few-shot">Few-shot prompting</dt>
+          <dd>Including a few examples of the desired input and output in a prompt so the model can follow the pattern. <a href="prompt-engineering.html#examples">Read more</a>.</dd>
+          <dt id="fine-tuning">Fine-tuning</dt>
+          <dd>Further training a pre-trained model on specific examples to change its behavior, style or skills. <a href="fine-tuning-vs-rag-vs-prompting.html#fine-tuning">Read more</a>.</dd>
+          <dt id="foundation-model">Foundation model</dt>
+          <dd>A large model trained on broad data that can be adapted to many tasks — such as today's large language models.</dd>
+          <dt id="function-calling">Function calling</dt>
+          <dd>See <a href="#tool-use">Tool use</a>.</dd>
+        </dl>
+
+        <h2 id="g-l">G – L</h2>
+        <dl class="glossary">
+          <dt id="generative-ai">Generative AI</dt>
+          <dd>AI that creates new content — text, images, audio, video or code — rather than only classifying or predicting.</dd>
+          <dt id="gpu">GPU (Graphics Processing Unit)</dt>
+          <dd>A processor that performs many calculations in parallel, making it ideal for training and running AI models. <a href="ai-tech-stack.html#compute">Read more</a>.</dd>
+          <dt id="grounding">Grounding</dt>
+          <dd>Basing a model's answer on specific provided sources rather than its general training, to improve accuracy and allow verification.</dd>
+          <dt id="guardrails">Guardrails</dt>
+          <dd>Rules and checks around an AI system that prevent unwanted inputs, outputs or actions.</dd>
+          <dt id="hallucination">Hallucination</dt>
+          <dd>When a model generates confident but false or made-up information. <a href="how-llms-work.html#hallucinations">Read more</a>.</dd>
+          <dt id="hnsw">HNSW</dt>
+          <dd>A graph-based index for fast approximate nearest-neighbor search, widely used in vector databases. <a href="vector-databases.html#ann">Read more</a>.</dd>
+          <dt id="hybrid-search">Hybrid search</dt>
+          <dd>Combining vector (semantic) search with keyword search so both meaning and exact terms are matched.</dd>
+          <dt id="inference">Inference</dt>
+          <dd>Running a trained model to produce outputs — as opposed to training it.</dd>
+          <dt id="llm">Large Language Model (LLM)</dt>
+          <dd>A very large neural network trained on huge amounts of text to predict the next token, which lets it understand and generate language. <a href="how-llms-work.html">Read more</a>.</dd>
+          <dt id="latency">Latency</dt>
+          <dd>How long a response takes. For streaming models, often measured as time to first token and tokens per second.</dd>
+          <dt id="llm-as-judge">LLM-as-judge</dt>
+          <dd>Using a language model to grade another model's outputs against a rubric. <a href="evaluating-llm-apps.html#judge">Read more</a>.</dd>
+          <dt id="lora">LoRA (Low-Rank Adaptation)</dt>
+          <dd>A parameter-efficient fine-tuning method that trains a small number of extra weights instead of the whole model, making fine-tuning much cheaper.</dd>
+        </dl>
+
+        <h2 id="m-o">M – O</h2>
+        <dl class="glossary">
+          <dt id="machine-learning">Machine learning (ML)</dt>
+          <dd>Building systems that learn patterns from data instead of following hand-written rules.</dd>
+          <dt id="mcp">MCP (Model Context Protocol)</dt>
+          <dd>An open standard for connecting AI applications to external tools and data sources. <a href="ai-agents.html#mcp">Read more</a>.</dd>
+          <dt id="model">Model</dt>
+          <dd>The trained mathematical function — a large set of learned parameters — that turns inputs into outputs.</dd>
+          <dt id="multimodal">Multimodal</dt>
+          <dd>Able to work with more than one type of data, such as text, images and audio. <a href="multimodal-ai.html">Read more</a>.</dd>
+          <dt id="neural-network">Neural network</dt>
+          <dd>A model made of layers of simple connected units whose connection strengths (weights) are learned from data.</dd>
+          <dt id="open-weight">Open-weight model</dt>
+          <dd>A model whose trained weights are publicly released so anyone can download and run it, subject to its license. <a href="running-ai-locally.html">Read more</a>.</dd>
+          <dt id="overfitting">Overfitting</dt>
+          <dd>When a model (or a prompt) performs well on the examples it was tuned on but poorly on new data.</dd>
+        </dl>
+
+        <h2 id="p-r">P – R</h2>
+        <dl class="glossary">
+          <dt id="parameters">Parameters (weights)</dt>
+          <dd>The learned numbers inside a model. Model size is usually given as a parameter count, such as "8B" for 8 billion.</dd>
+          <dt id="pretraining">Pretraining</dt>
+          <dd>The first, largest training stage, where a model learns from massive general data by predicting the next token. <a href="how-llms-work.html#training">Read more</a>.</dd>
+          <dt id="prompt">Prompt</dt>
+          <dd>The input you give a model: instructions, context, examples and questions.</dd>
+          <dt id="prompt-engineering">Prompt engineering</dt>
+          <dd>The practice of designing and iterating on prompts to get reliable, high-quality outputs. <a href="prompt-engineering.html">Read more</a>.</dd>
+          <dt id="prompt-injection">Prompt injection</dt>
+          <dd>An attack where instructions hidden in content an AI reads try to override its intended behavior. <a href="responsible-ai.html#security">Read more</a>.</dd>
+          <dt id="quantization">Quantization</dt>
+          <dd>Storing model weights (or vectors) with fewer bits to save memory and speed up computation, with a small loss of accuracy. <a href="running-ai-locally.html#quantization">Read more</a>.</dd>
+          <dt id="rag">RAG (Retrieval-Augmented Generation)</dt>
+          <dd>Retrieving relevant information from your own data and adding it to the prompt so the model can answer from it. <a href="build-rag-app.html">Read more</a>.</dd>
+          <dt id="reasoning-model">Reasoning model</dt>
+          <dd>A model trained to "think" through problems — often producing internal reasoning before its answer — improving results on complex tasks.</dd>
+          <dt id="reranker">Reranker</dt>
+          <dd>A model that re-scores retrieved results against the query for higher precision, typically applied to the top results of a first search.</dd>
+          <dt id="rlhf">RLHF (Reinforcement Learning from Human Feedback)</dt>
+          <dd>A training method that uses human preferences between responses to make models more helpful and safe. <a href="how-llms-work.html#training">Read more</a>.</dd>
+        </dl>
+
+        <h2 id="s-z">S – Z</h2>
+        <dl class="glossary">
+          <dt id="semantic-search">Semantic search</dt>
+          <dd>Searching by meaning rather than exact words, usually with embeddings. <a href="embeddings.html#uses">Read more</a>.</dd>
+          <dt id="structured-output">Structured output</dt>
+          <dd>Constraining a model to return data in a defined format, such as JSON matching a schema.</dd>
+          <dt id="system-prompt">System prompt</dt>
+          <dd>Standing instructions that set a model's role, rules and context for a whole conversation. <a href="prompt-engineering.html#roles">Read more</a>.</dd>
+          <dt id="temperature">Temperature</dt>
+          <dd>A setting that controls randomness in generation: low is focused and consistent, high is varied and creative. <a href="how-llms-work.html#prediction">Read more</a>.</dd>
+          <dt id="token">Token</dt>
+          <dd>A chunk of text — a word or part of a word — that a model processes. Pricing and limits are counted in tokens. <a href="how-llms-work.html#tokens">Read more</a>.</dd>
+          <dt id="tool-use">Tool use</dt>
+          <dd>A model's ability to request calls to external functions (search, databases, APIs), which your code executes. Also called function calling. <a href="ai-agents.html#tool-use">Read more</a>.</dd>
+          <dt id="training-data">Training data</dt>
+          <dd>The data a model learns from. Its content, quality and cutoff date shape what the model knows.</dd>
+          <dt id="transformer">Transformer</dt>
+          <dd>The neural network architecture, introduced in 2017, behind almost all modern language models; built around attention. <a href="how-llms-work.html#attention">Read more</a>.</dd>
+          <dt id="vector">Vector</dt>
+          <dd>An ordered list of numbers. In AI, vectors represent data such as embeddings.</dd>
+          <dt id="vector-database">Vector database</dt>
+          <dd>A database that stores embeddings and quickly finds the ones most similar to a query. <a href="vector-databases.html">Read more</a>.</dd>
+          <dt id="workflow">Workflow</dt>
+          <dd>A fixed, code-controlled sequence of AI steps — more predictable than an agent. <a href="ai-agents.html#workflows">Read more</a>.</dd>
+          <dt id="zero-shot">Zero-shot</dt>
+          <dd>Asking a model to do a task with no examples, relying only on instructions.</dd>
+        </dl>
+
+        <nav class="next-article" aria-label="Next article">
+          <span>Keep learning</span>
+          <a href="./">Browse all articles →</a>
+        </nav>
+      </div>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <a href="../" class="brand">
+        <img src="../assets/favicon.svg" alt="" width="28" height="28">
+        <span>Be<strong>AI</strong>Expert</span>
+      </a>
+      <nav class="footer__links" aria-label="Footer">
+        <a href="./">Articles</a>
+        <a href="ai-tech-stack.html">Tech Stack</a>
+        <a href="../#faq">FAQ</a>
+        <a href="mailto:hello@beaiexpert.com">Contact</a>
+      </nav>
+      <p class="footer__copy">© <span id="year">2026</span> BeAIExpert.com · Free AI education for everyone.</p>
+    </div>
+  </footer>
+
+  <script src="../assets/main.js" defer></script>
+</body>
+</html>

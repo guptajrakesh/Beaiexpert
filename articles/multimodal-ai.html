@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Multimodal AI: Images, Audio and Beyond — BeAIExpert</title>
+  <meta name="description" content="How AI models see images, hear audio and generate pictures: vision encoders, CLIP, diffusion models, speech recognition and synthesis, real use cases and current limitations.">
+  <link rel="canonical" href="https://beaiexpert.com/articles/multimodal-ai.html">
+  <meta property="og:title" content="Multimodal AI: Images, Audio and Beyond">
+  <meta property="og:type" content="article">
+  <meta name="theme-color" content="#4f46e5">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="progress" aria-hidden="true"><div class="progress__bar"></div></div>
+
+  <header class="nav">
+    <div class="container nav__inner">
+      <a href="../" class="brand" aria-label="BeAIExpert home">
+        <img src="../assets/favicon.svg" alt="" width="32" height="32">
+        <span>Be<strong>AI</strong>Expert</span>
+      </a>
+      <button class="nav__toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <nav id="nav-links" class="nav__links">
+        <a href="./">Articles</a>
+        <a href="../#stack">Tech Stack</a>
+        <a href="../#roadmap">Roadmap</a>
+        <a href="../#faq">FAQ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <article class="article">
+      <header class="article__head container container--prose">
+        <a href="./" class="back">← All articles</a>
+        <span class="tag tag--fundamentals">Fundamentals</span>
+        <h1>Multimodal AI: Images, Audio and Beyond</h1>
+        <p class="article__dek">Modern AI doesn't just read text. It can describe photos, read charts, transcribe speech, talk back and create images. Here's how models handle more than words — and where they still stumble.</p>
+        <p class="article__meta">14 min read · Beginner</p>
+      </header>
+
+      <div class="container container--prose prose">
+        <nav class="toc" aria-label="On this page">
+          <strong>On this page</strong>
+          <ol>
+            <li><a href="#what">What "multimodal" means</a></li>
+            <li><a href="#vision">How AI "sees" an image</a></li>
+            <li><a href="#clip">Connecting pictures and words: CLIP</a></li>
+            <li><a href="#generation">How AI creates images: diffusion</a></li>
+            <li><a href="#audio">Audio: listening and speaking</a></li>
+            <li><a href="#uses">What it's useful for</a></li>
+            <li><a href="#limits">Current limitations</a></li>
+            <li><a href="#tips">Tips for better results</a></li>
+            <li><a href="#takeaways">Key takeaways</a></li>
+          </ol>
+        </nav>
+
+        <h2 id="what">What "multimodal" means</h2>
+        <p>A <strong>modality</strong> is a type of data: text, images, audio, video. A <strong>multimodal</strong> model can work with more than one. Today's leading AI assistants can take a photo, a screenshot, a PDF or a voice recording as input — and many can produce speech or images as output.</p>
+        <p>This matters because most of the world's information isn't plain text. It's in diagrams, scanned forms, charts, product photos, meetings and videos. Multimodal AI lets models work with information the way people actually encounter it.</p>
+
+        <h2 id="vision">How AI "sees" an image</h2>
+        <p>Recall from <a href="how-llms-work.html">How Large Language Models Actually Work</a> that a language model processes a sequence of tokens, each represented as a vector. The key idea behind vision-language models is surprisingly simple: <strong>turn the image into tokens too</strong>.</p>
+        <ol>
+          <li><strong>Cut the image into patches.</strong> The image is divided into a grid of small squares — for example 14×14 or 16×16 pixels each.</li>
+          <li><strong>Encode the patches.</strong> A <em>vision encoder</em> — usually a Vision Transformer (ViT) — converts each patch into a vector, using attention so each patch "knows" about the rest of the image.</li>
+          <li><strong>Project into the language model's space.</strong> A small adapter maps these image vectors into the same embedding space the language model uses for words.</li>
+          <li><strong>Process everything together.</strong> The language model now sees a sequence like <em>[image tokens…] "What's wrong with this circuit?"</em> and attends across both, generating a text answer as usual.</li>
+        </ol>
+        <div class="callout">
+          <strong>Key idea:</strong> once images become vectors in the same space as words, the same transformer machinery can reason about both together.
+        </div>
+        <p>A practical consequence: images consume context and cost tokens, often hundreds or more per image depending on resolution. Very large images are typically resized, which is why tiny text in a huge screenshot can be missed.</p>
+
+        <h2 id="clip">Connecting pictures and words: CLIP</h2>
+        <p>A landmark step was <strong>CLIP</strong> (OpenAI, 2021), trained on hundreds of millions of image–caption pairs from the web. It learns two encoders — one for images, one for text — so that an image and a matching description land close together in a shared <a href="embeddings.html">embedding</a> space.</p>
+        <p>That shared space enables:</p>
+        <ul>
+          <li><strong>Searching images with words</strong> — "red bicycle leaning on a wall" finds matching photos without any manual tags.</li>
+          <li><strong>Zero-shot classification</strong> — compare an image with the captions "a photo of a cat" and "a photo of a dog" and pick the closer one, without training a classifier.</li>
+          <li><strong>Guiding image generators</strong> — text–image alignment like this underpins many text-to-image systems.</li>
+        </ul>
+
+        <h2 id="generation">How AI creates images: diffusion</h2>
+        <p>Most modern image generators are <strong>diffusion models</strong>. The intuition:</p>
+        <ul>
+          <li><strong>Training:</strong> take real images and gradually add random noise until nothing but static remains. Train a neural network to predict and remove that noise one step at a time.</li>
+          <li><strong>Generating:</strong> start from pure random noise and repeatedly apply the denoiser. Step by step, structure emerges — guided by your text prompt, which is encoded and fed into the network at every step.</li>
+        </ul>
+        <p>Many systems run this process in a compressed "latent" space rather than on raw pixels, which makes it much faster (this is the idea behind <em>latent diffusion</em>, used by Stable Diffusion). The same family of techniques extends to video, with additional machinery for keeping frames consistent over time. Other approaches, including generating images as sequences of tokens, are also used.</p>
+
+        <h2 id="audio">Audio: listening and speaking</h2>
+        <h3>Speech recognition</h3>
+        <p>Automatic speech recognition (ASR) turns audio into text. Audio is usually converted into a <em>spectrogram</em> — an image-like picture of which frequencies are present over time — which a transformer encodes. OpenAI's open-source <strong>Whisper</strong> model, trained on a very large amount of multilingual audio, made accurate transcription widely accessible.</p>
+        <h3>Speech synthesis</h3>
+        <p>Text-to-speech (TTS) models now produce natural, expressive voices, and some can imitate a specific voice from a short sample — powerful for accessibility and dubbing, and a serious risk for scams (see <a href="responsible-ai.html#misuse">Responsible AI</a>).</p>
+        <h3>Voice assistants</h3>
+        <p>Voice AI used to be a pipeline: speech-to-text → language model → text-to-speech. Newer <strong>speech-native</strong> models process audio directly, which lowers latency and lets them pick up on tone and respond more naturally, including handling interruptions.</p>
+
+        <h2 id="uses">What it's useful for</h2>
+        <ul>
+          <li><strong>Document understanding</strong> — extracting data from invoices, receipts, forms and scanned PDFs, including tables and handwriting.</li>
+          <li><strong>Charts and screenshots</strong> — explaining a dashboard, debugging from a screenshot of an error, turning a whiteboard photo into notes.</li>
+          <li><strong>Accessibility</strong> — describing images for blind and low-vision users; live captions for deaf and hard-of-hearing users.</li>
+          <li><strong>Meetings and media</strong> — transcription, summaries, searchable video archives.</li>
+          <li><strong>Visual inspection</strong> — spotting defects, reading meters, checking shelves (with careful validation).</li>
+          <li><strong>Computer use</strong> — agents that look at a screen and operate software by clicking and typing.</li>
+          <li><strong>Creative work</strong> — concept art, mock-ups, illustrations, video and audio production.</li>
+        </ul>
+
+        <h2 id="limits">Current limitations</h2>
+        <p>Multimodal models are impressive but less reliable than they appear. Common weaknesses:</p>
+        <ul>
+          <li><strong>Counting and precise spatial reasoning</strong> — "how many people are in this photo?" or "is the cup left of the plate?" can go wrong.</li>
+          <li><strong>Small or dense details</strong> — fine print, small labels and crowded diagrams may be misread, especially after resizing.</li>
+          <li><strong>Visual hallucinations</strong> — describing objects or text that aren't actually there.</li>
+          <li><strong>Exact measurements</strong> — reading precise values off charts or estimating sizes and distances.</li>
+          <li><strong>Image generation quirks</strong> — difficulty with exact text, specific counts, or consistent characters across images (improving quickly).</li>
+        </ul>
+
+        <h2 id="tips">Tips for better results</h2>
+        <ul>
+          <li><strong>Use clear, high-resolution images</strong>, cropped to the relevant area.</li>
+          <li><strong>Ask specific questions</strong> — "list every line item and its amount" beats "what's in this?".</li>
+          <li><strong>Ask it to transcribe first</strong>, then reason: "first write out all the text in the image, then answer".</li>
+          <li><strong>Split big documents</strong> into pages or sections.</li>
+          <li><strong>Verify extracted numbers</strong> — and for production data extraction, validate with code (totals add up, dates are valid) and <a href="evaluating-llm-apps.html">measure accuracy</a> on real samples.</li>
+        </ul>
+
+        <h2 id="takeaways">Key takeaways</h2>
+        <ul class="checks">
+          <li>Multimodal models handle more than one type of data: text, images, audio, video.</li>
+          <li>Images are cut into patches, encoded into vectors and processed alongside word tokens.</li>
+          <li>CLIP-style models put images and text in a shared embedding space.</li>
+          <li>Diffusion models create images by progressively removing noise, guided by text.</li>
+          <li>Speech models transcribe, speak and increasingly converse directly in audio.</li>
+          <li>Watch for weak spots: counting, small details, visual hallucinations — and verify.</li>
+        </ul>
+
+        <nav class="next-article" aria-label="Next article">
+          <span>Next up</span>
+          <a href="running-ai-locally.html">Running AI Models Locally →</a>
+        </nav>
+      </div>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <a href="../" class="brand">
+        <img src="../assets/favicon.svg" alt="" width="28" height="28">
+        <span>Be<strong>AI</strong>Expert</span>
+      </a>
+      <nav class="footer__links" aria-label="Footer">
+        <a href="./">Articles</a>
+        <a href="ai-tech-stack.html">Tech Stack</a>
+        <a href="../#faq">FAQ</a>
+        <a href="mailto:hello@beaiexpert.com">Contact</a>
+      </nav>
+      <p class="footer__copy">© <span id="year">2026</span> BeAIExpert.com · Free AI education for everyone.</p>
+    </div>
+  </footer>
+
+  <script src="../assets/main.js" defer></script>
+</body>
+</html>

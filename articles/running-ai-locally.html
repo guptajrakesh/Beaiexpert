@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Running AI Models Locally — BeAIExpert</title>
+  <meta name="description" content="How to run open-weight AI models on your own computer: why you&#x27;d want to, the hardware you need, quantization explained, and step-by-step setup with Ollama, LM Studio and llama.cpp.">
+  <link rel="canonical" href="https://beaiexpert.com/articles/running-ai-locally.html">
+  <meta property="og:title" content="Running AI Models Locally">
+  <meta property="og:type" content="article">
+  <meta name="theme-color" content="#4f46e5">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="progress" aria-hidden="true"><div class="progress__bar"></div></div>
+
+  <header class="nav">
+    <div class="container nav__inner">
+      <a href="../" class="brand" aria-label="BeAIExpert home">
+        <img src="../assets/favicon.svg" alt="" width="32" height="32">
+        <span>Be<strong>AI</strong>Expert</span>
+      </a>
+      <button class="nav__toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <nav id="nav-links" class="nav__links">
+        <a href="./">Articles</a>
+        <a href="../#stack">Tech Stack</a>
+        <a href="../#roadmap">Roadmap</a>
+        <a href="../#faq">FAQ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <article class="article">
+      <header class="article__head container container--prose">
+        <a href="./" class="back">← All articles</a>
+        <span class="tag tag--stack">Tech Stack</span>
+        <h1>Running AI Models Locally</h1>
+        <p class="article__dek">You can run capable AI models on your own laptop — free, private and offline. Here's what hardware you need, how quantization makes it possible, and how to get started in minutes.</p>
+        <p class="article__meta">14 min read · Beginner–Intermediate</p>
+      </header>
+
+      <div class="container container--prose prose">
+        <nav class="toc" aria-label="On this page">
+          <strong>On this page</strong>
+          <ol>
+            <li><a href="#why">Why run AI locally?</a></li>
+            <li><a href="#hardware">How much hardware do you need?</a></li>
+            <li><a href="#quantization">Quantization: the trick that makes it possible</a></li>
+            <li><a href="#ollama">Option 1: Ollama (easiest from the command line)</a></li>
+            <li><a href="#lmstudio">Option 2: LM Studio (easiest with a graphical app)</a></li>
+            <li><a href="#llamacpp">Option 3: llama.cpp (maximum control)</a></li>
+            <li><a href="#choosing">Choosing a model</a></li>
+            <li><a href="#tips">Performance tips</a></li>
+            <li><a href="#takeaways">Key takeaways</a></li>
+          </ol>
+        </nav>
+
+        <h2 id="why">Why run AI locally?</h2>
+        <p>Cloud AI services are the easiest way to use the most capable models. But <strong>open-weight models</strong> — models whose weights are published, such as Meta's Llama, Mistral, Google's Gemma, Qwen and DeepSeek — can run entirely on your own hardware. Reasons to do it:</p>
+        <ul>
+          <li><strong>Privacy</strong> — your data never leaves your machine. Ideal for confidential documents.</li>
+          <li><strong>Cost</strong> — no per-token fees; once you have the hardware, experimentation is free.</li>
+          <li><strong>Offline use</strong> — works on a plane, in the field, or in air-gapped environments.</li>
+          <li><strong>Control</strong> — the model never changes unless you change it; you can fine-tune and customize freely.</li>
+          <li><strong>Learning</strong> — nothing teaches you how LLMs behave like running and tweaking one yourself.</li>
+        </ul>
+        <p>The trade-off: the models you can run on a laptop are smaller and generally less capable than the largest cloud models, especially for complex reasoning. For many everyday tasks — summarizing, drafting, extraction, classification, coding help — they're very useful.</p>
+
+        <h2 id="hardware">How much hardware do you need?</h2>
+        <p>The main constraint is <strong>memory</strong>: the whole model must fit in RAM (or GPU memory) to run at a usable speed. A rough rule:</p>
+        <pre><code>memory needed ≈ number of parameters × bytes per parameter (+ some overhead)
+
+8 billion parameters × 2 bytes (16-bit)  ≈ 16 GB
+8 billion parameters × 0.5 bytes (4-bit) ≈  4–5 GB</code></pre>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Model size</th><th>Approx. memory at 4-bit</th><th>Typical hardware</th></tr></thead>
+            <tbody>
+              <tr><td>1–4B parameters</td><td>1–3 GB</td><td>Almost any modern laptop; even some phones</td></tr>
+              <tr><td>7–9B</td><td>4–6 GB</td><td>16 GB laptop, or a GPU with 8 GB+</td></tr>
+              <tr><td>12–14B</td><td>8–10 GB</td><td>16–32 GB laptop, or a 12–16 GB GPU</td></tr>
+              <tr><td>27–34B</td><td>16–22 GB</td><td>32 GB+ Mac, or a 24 GB GPU</td></tr>
+              <tr><td>70B</td><td>40+ GB</td><td>64 GB+ Mac, or multiple GPUs</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Longer conversations need extra memory on top (for the model's working "KV cache"), so leave headroom.</p>
+        <p><strong>What makes it fast:</strong> a dedicated NVIDIA GPU is the fastest common option. Apple Silicon Macs (M-series) work very well because their <em>unified memory</em> is shared between CPU and GPU, so a 32 GB Mac can hold models a typical 8 GB graphics card can't. CPU-only machines work too, just more slowly.</p>
+
+        <h2 id="quantization">Quantization: the trick that makes it possible</h2>
+        <p>Models are trained with 16- or 32-bit numbers for each parameter. <strong>Quantization</strong> stores them with fewer bits — 8, 5, 4 or even fewer — shrinking the model dramatically with surprisingly little quality loss. A 4-bit model is about a quarter the size of the 16-bit original.</p>
+        <p>You'll see quantized files labelled with names like <code>Q4_K_M</code>, <code>Q5_K_M</code> or <code>Q8_0</code> (from the GGUF format used by llama.cpp). Guidelines:</p>
+        <ul>
+          <li><strong>4-bit (e.g. Q4_K_M)</strong> — the popular sweet spot of size, speed and quality.</li>
+          <li><strong>5–6 bit</strong> — slightly better quality if you have the memory.</li>
+          <li><strong>8-bit</strong> — very close to the original; twice the size of 4-bit.</li>
+          <li><strong>Below 4-bit</strong> — quality drops more noticeably; useful only to squeeze in a bigger model.</li>
+        </ul>
+        <div class="callout callout--tip">
+          <strong>Rule of thumb:</strong> a larger model at 4-bit usually beats a smaller model at 8-bit of the same file size.
+        </div>
+
+        <h2 id="ollama">Option 1: Ollama (easiest from the command line)</h2>
+        <p><strong>Ollama</strong> is a free tool for Mac, Windows and Linux that downloads, manages and runs models with one command. Install it from <code>ollama.com</code>, then:</p>
+        <pre><code># download a model (first time only) and start chatting
+ollama run llama3.2
+
+# other useful commands
+ollama list            # models you've downloaded
+ollama pull qwen2.5    # download another model
+ollama rm llama3.2     # delete a model to free disk space</code></pre>
+        <p>Browse the model library on the Ollama website to find models by size and purpose (general chat, coding, vision, embeddings). New models are added frequently.</p>
+        <h3>Using it from your own code</h3>
+        <p>Ollama runs a local server on port <code>11434</code> with a simple HTTP API:</p>
+        <pre><code>import requests
+
+response = requests.post("http://localhost:11434/api/chat", json={
+    "model": "llama3.2",
+    "messages": [{"role": "user", "content": "Explain embeddings in one sentence."}],
+    "stream": False,
+})
+print(response.json()["message"]["content"])</code></pre>
+        <p>That's all you need to fill in the <code>call_llm</code> placeholder from <a href="build-rag-app.html">Build a RAG App From Scratch</a> — giving you a completely private, offline document assistant:</p>
+        <pre><code>def call_llm(prompt):
+    response = requests.post("http://localhost:11434/api/chat", json={
+        "model": "llama3.2",
+        "messages": [{"role": "user", "content": prompt}],
+        "stream": False,
+    })
+    response.raise_for_status()
+    return response.json()["message"]["content"]</code></pre>
+        <p>Ollama also offers an OpenAI-compatible endpoint at <code>http://localhost:11434/v1</code>, so many existing tools and libraries can point at it with a one-line configuration change, and it can serve local embedding models too.</p>
+
+        <h2 id="lmstudio">Option 2: LM Studio (easiest with a graphical app)</h2>
+        <p><strong>LM Studio</strong> is a free desktop app with a chat interface. You search for models, it shows which ones fit your hardware, and you download and chat with a click — no terminal needed. It can also run a local server compatible with the OpenAI API for use from code. Other desktop apps, such as <strong>Jan</strong>, offer a similar experience.</p>
+
+        <h2 id="llamacpp">Option 3: llama.cpp (maximum control)</h2>
+        <p><strong>llama.cpp</strong> is the open-source engine that powers much of the local-AI ecosystem. Using it directly gives you fine control over performance settings. Models come as single <code>.gguf</code> files, widely available on the Hugging Face Hub.</p>
+        <pre><code># chat with a model in the terminal
+llama-cli -m ./models/my-model-Q4_K_M.gguf
+
+# or run an OpenAI-compatible server on port 8080
+llama-server -m ./models/my-model-Q4_K_M.gguf --port 8080</code></pre>
+        <p>For serving models to many users on GPU servers, production-oriented engines like <strong>vLLM</strong> are a better fit (see <a href="ai-tech-stack.html#serving">the serving layer</a>).</p>
+
+        <h2 id="choosing">Choosing a model</h2>
+        <ul>
+          <li><strong>Start small:</strong> try a 3–8B model first to see what your machine handles comfortably, then size up.</li>
+          <li><strong>Use the instruction-tuned version</strong> (often labelled <em>instruct</em> or <em>chat</em>) for conversation — base models just continue text.</li>
+          <li><strong>Pick specialists</strong> where they exist: coding models for code, vision models for images, embedding models for search.</li>
+          <li><strong>Check the license.</strong> "Open-weight" doesn't always mean unrestricted; some licenses limit commercial use or require attribution.</li>
+          <li><strong>Test on your own tasks.</strong> Leaderboards are a rough guide; your use case is what counts.</li>
+        </ul>
+
+        <h2 id="tips">Performance tips</h2>
+        <ul>
+          <li><strong>Fit the whole model in GPU/unified memory</strong> — once layers spill over to the CPU, speed drops sharply.</li>
+          <li><strong>Keep context lengths reasonable</strong> — very long contexts need more memory and run slower.</li>
+          <li><strong>Close memory-hungry apps</strong> when running larger models.</li>
+          <li><strong>Measure speed in tokens per second</strong> — roughly 10+ tokens/second feels comfortable for chat.</li>
+        </ul>
+
+        <h2 id="takeaways">Key takeaways</h2>
+        <ul class="checks">
+          <li>Open-weight models can run privately, offline and free on your own hardware.</li>
+          <li>Memory is the main constraint: parameters × bytes per parameter, plus headroom.</li>
+          <li>Quantization (often 4-bit) shrinks models about 4× with modest quality loss.</li>
+          <li>Ollama and LM Studio get you started in minutes; llama.cpp gives full control.</li>
+          <li>Local models are smaller than the best cloud models — choose tasks accordingly and test.</li>
+        </ul>
+
+        <nav class="next-article" aria-label="Next article">
+          <span>Next up</span>
+          <a href="ai-glossary.html">The AI Glossary: 60+ Terms Explained →</a>
+        </nav>
+      </div>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <a href="../" class="brand">
+        <img src="../assets/favicon.svg" alt="" width="28" height="28">
+        <span>Be<strong>AI</strong>Expert</span>
+      </a>
+      <nav class="footer__links" aria-label="Footer">
+        <a href="./">Articles</a>
+        <a href="ai-tech-stack.html">Tech Stack</a>
+        <a href="../#faq">FAQ</a>
+        <a href="mailto:hello@beaiexpert.com">Contact</a>
+      </nav>
+      <p class="footer__copy">© <span id="year">2026</span> BeAIExpert.com · Free AI education for everyone.</p>
+    </div>
+  </footer>
+
+  <script src="../assets/main.js" defer></script>
+</body>
+</html>

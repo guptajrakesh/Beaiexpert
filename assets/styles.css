@@ -289,3 +289,9 @@ details p { color: var(--muted); padding-bottom: 6px; }
 .compare__good > span { color: #059669; }
 .compare pre { margin: 0; }
 @media (prefers-color-scheme: dark) { .compare__bad > span { color: #f87171; } .compare__good > span { color: #6ee7b7; } }
+
+/* Glossary */
+.glossary { margin: 0 0 1.4em; }
+.glossary dt { font-weight: 700; font-size: 1.08rem; margin-top: 1.2em; scroll-margin-top: 90px; }
+.glossary dd { margin: 0.25em 0 0; color: var(--muted); }
+.glossary dt:target { color: var(--brand); }
