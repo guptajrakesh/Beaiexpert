@@ -71,15 +71,15 @@ Augmented: add those passages to the prompt.
 Generation: the language model writes an answer grounded in them.
 
 19
-00:01:37,500 --> 00:01:43,350
+00:01:37,500 --> 00:01:42,950
 A RAG system works in two phases. The first is indexing, which you do once, ahead of time.
 
 20
-00:01:43,500 --> 00:01:47,850
+00:01:43,100 --> 00:01:48,150
 Start with your documents: PDFs, web pages, policies, notes.
 
 21
-00:01:48,000 --> 00:01:53,850
+00:01:48,300 --> 00:01:53,850
 Split them into smaller passages, called chunks, so we can find precise pieces later.
 
 22
@@ -159,33 +159,33 @@ When the answers live in private or internal documents...
 ...when information changes often, or there's far too much to fit in a prompt...
 
 41
-00:03:42,000 --> 00:03:45,850
+00:03:42,000 --> 00:03:45,050
 ...and whenever answers need sources people can verify.
 
 42
-00:03:46,000 --> 00:03:50,850
+00:03:45,200 --> 00:03:52,350
 That's why RAG powers so many real assistants: customer support, internal knowledge bases, and document search.
 
 43
-00:03:51,500 --> 00:03:56,850
+00:03:53,000 --> 00:03:58,350
 In this series, we'll build a complete RAG application step by step, in Python.
 
 44
-00:03:57,000 --> 00:04:02,850
+00:03:58,500 --> 00:04:04,350
 Next, we'll load and chunk documents, then create embeddings and semantic search.
 
 45
-00:04:03,000 --> 00:04:07,850
+00:04:04,500 --> 00:04:10,550
 Then we'll retrieve the right passages, and generate grounded answers with citations...
 
 46
-00:04:08,000 --> 00:04:12,850
+00:04:10,700 --> 00:04:15,350
 ...and finally measure and improve quality, like a real production system.
 
 47
-00:04:13,500 --> 00:04:17,350
+00:04:16,000 --> 00:04:20,950
 Want to read ahead? The full guide is free at beaiexpert.com.
 
 48
-00:04:17,500 --> 00:04:21,850
+00:04:21,100 --> 00:04:25,850
 See you in episode two.

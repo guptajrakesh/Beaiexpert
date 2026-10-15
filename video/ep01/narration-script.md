@@ -43,12 +43,12 @@ Narration script. Read each line starting at its timestamp; the on-screen captio
 **[3:32]** When the answers live in private or internal documents...  
 **[3:37]** ...when information changes often, or there's far too much to fit in a prompt...  
 **[3:42]** ...and whenever answers need sources people can verify.  
-**[3:46]** That's why RAG powers so many real assistants: customer support, internal knowledge bases, and document search.  
-**[3:51]** In this series, we'll build a complete RAG application step by step, in Python.  
-**[3:57]** Next, we'll load and chunk documents, then create embeddings and semantic search.  
-**[4:03]** Then we'll retrieve the right passages, and generate grounded answers with citations...  
-**[4:08]** ...and finally measure and improve quality, like a real production system.  
-**[4:13]** Want to read ahead? The full guide is free at beaiexpert.com.  
-**[4:17]** See you in episode two.  
+**[3:45]** That's why RAG powers so many real assistants: customer support, internal knowledge bases, and document search.  
+**[3:53]** In this series, we'll build a complete RAG application step by step, in Python.  
+**[3:58]** Next, we'll load and chunk documents, then create embeddings and semantic search.  
+**[4:04]** Then we'll retrieve the right passages, and generate grounded answers with citations...  
+**[4:10]** ...and finally measure and improve quality, like a real production system.  
+**[4:16]** Want to read ahead? The full guide is free at beaiexpert.com.  
+**[4:21]** See you in episode two.  
 
-Total length: 4:22
+Total length: 4:26
