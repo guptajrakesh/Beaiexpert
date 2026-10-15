@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://beaiexpert.com/</loc></url>
-  <url><loc>https://beaiexpert.com/articles/</loc></url>
-  <url><loc>https://beaiexpert.com/articles/how-llms-work.html</loc></url>
-  <url><loc>https://beaiexpert.com/articles/embeddings.html</loc></url>
-  <url><loc>https://beaiexpert.com/articles/prompt-engineering.html</loc></url>
-  <url><loc>https://beaiexpert.com/articles/ai-tech-stack.html</loc></url>
-  <url><loc>https://beaiexpert.com/articles/vector-databases.html</loc></url>
-  <url><loc>https://beaiexpert.com/articles/build-rag-app.html</loc></url>
-  <url><loc>https://beaiexpert.com/articles/fine-tuning-vs-rag-vs-prompting.html</loc></url>
-  <url><loc>https://beaiexpert.com/articles/ai-agents.html</loc></url>
-  <url><loc>https://beaiexpert.com/articles/evaluating-llm-apps.html</loc></url>
-  <url><loc>https://beaiexpert.com/articles/responsible-ai.html</loc></url>
-  <url><loc>https://beaiexpert.com/articles/multimodal-ai.html</loc></url>
-  <url><loc>https://beaiexpert.com/articles/running-ai-locally.html</loc></url>
-  <url><loc>https://beaiexpert.com/articles/ai-glossary.html</loc></url>
+  <url><loc>https://beaiexpert.com/</loc><lastmod>2026-10-15</lastmod><priority>1.0</priority></url>
+  <url><loc>https://beaiexpert.com/articles/</loc><lastmod>2026-10-15</lastmod><priority>0.9</priority></url>
+  <url><loc>https://beaiexpert.com/about.html</loc><lastmod>2026-10-15</lastmod><priority>0.5</priority></url>
+  <url><loc>https://beaiexpert.com/articles/ai-agents.html</loc><lastmod>2026-10-14</lastmod><priority>0.8</priority></url>
+  <url><loc>https://beaiexpert.com/articles/ai-glossary.html</loc><lastmod>2026-10-14</lastmod><priority>0.8</priority></url>
+  <url><loc>https://beaiexpert.com/articles/ai-tech-stack.html</loc><lastmod>2026-10-14</lastmod><priority>0.8</priority></url>
+  <url><loc>https://beaiexpert.com/articles/build-rag-app.html</loc><lastmod>2026-10-14</lastmod><priority>0.8</priority></url>
+  <url><loc>https://beaiexpert.com/articles/embeddings.html</loc><lastmod>2026-10-14</lastmod><priority>0.8</priority></url>
+  <url><loc>https://beaiexpert.com/articles/evaluating-llm-apps.html</loc><lastmod>2026-10-14</lastmod><priority>0.8</priority></url>
+  <url><loc>https://beaiexpert.com/articles/fine-tuning-vs-rag-vs-prompting.html</loc><lastmod>2026-10-14</lastmod><priority>0.8</priority></url>
+  <url><loc>https://beaiexpert.com/articles/how-llms-work.html</loc><lastmod>2026-10-14</lastmod><priority>0.8</priority></url>
+  <url><loc>https://beaiexpert.com/articles/multimodal-ai.html</loc><lastmod>2026-10-14</lastmod><priority>0.8</priority></url>
+  <url><loc>https://beaiexpert.com/articles/prompt-engineering.html</loc><lastmod>2026-10-14</lastmod><priority>0.8</priority></url>
+  <url><loc>https://beaiexpert.com/articles/responsible-ai.html</loc><lastmod>2026-10-14</lastmod><priority>0.8</priority></url>
+  <url><loc>https://beaiexpert.com/articles/running-ai-locally.html</loc><lastmod>2026-10-14</lastmod><priority>0.8</priority></url>
+  <url><loc>https://beaiexpert.com/articles/vector-databases.html</loc><lastmod>2026-10-14</lastmod><priority>0.8</priority></url>
 </urlset>

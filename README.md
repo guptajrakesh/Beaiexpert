@@ -13,7 +13,9 @@ articles/*.html     Individual articles
 404.html            Not-found page
 assets/styles.css   Styles (light + dark mode, article typography)
 assets/main.js      Mobile nav, scroll reveal, filters, reading progress, copy buttons
-sitemap.xml, robots.txt  Search engine indexing
+about.html          About page (organization info for search and AI engines)
+sitemap.xml, robots.txt, llms.txt  Search engine and AI crawler indexing
+assets/og/          Social preview images (1200×630)
 assets/favicon.svg  Logo / favicon
 CNAME               Custom domain for GitHub Pages
 .github/workflows/pages.yml   Auto-deploy on push
@@ -51,6 +53,7 @@ python3 -m http.server 8000
 
 ## Adding a new article
 
-1. Copy an existing file in `articles/` (e.g. `how-llms-work.html`) and replace the title, description, canonical URL, tag and body.
+1. Copy an existing file in `articles/` (e.g. `how-llms-work.html`) and replace the title, description, canonical URL, tag, byline date and body — including the Open Graph/Twitter tags and the JSON-LD block in `<head>` (headline, description, URL, image, dates).
+   Add a 1200×630 preview image at `assets/og/<slug>.png`.
 2. Add a card for it to `articles/index.html` (set `data-category` to `fundamentals`, `tech-stack` or `development`) and, if it's new, to the "Latest articles" section of `index.html`.
-3. Add its URL to `sitemap.xml`.
+3. Add its URL (with `lastmod`) to `sitemap.xml`, and a line for it in `llms.txt`.

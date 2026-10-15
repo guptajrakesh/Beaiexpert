@@ -1,0 +1,32 @@
+# BeAIExpert
+
+> Free, in-depth AI education for everyone: clear explanations of how AI works, the modern AI tech stack, and hands-on AI development guides with working code. Written and maintained by the BeAIExpert Team. All content is free to read.
+
+Articles are vendor-neutral, show their last-updated date, and link to each other in a suggested learning path (start with How Large Language Models Actually Work). The AI Glossary (https://beaiexpert.com/articles/ai-glossary.html) defines common terms.
+
+## Fundamentals
+
+- [The AI Glossary: 60+ Terms Explained](https://beaiexpert.com/articles/ai-glossary.html): Plain-English definitions of the most important AI terms — from agents, attention and embeddings to RAG, tokens, transformers and zero-shot — with links to in-depth articles.
+- [Embeddings Explained: How AI Understands Meaning](https://beaiexpert.com/articles/embeddings.html): What embeddings are, how they turn words and documents into vectors that capture meaning, how similarity is measured, and where they power search, RAG, recommendations and more.
+- [How Large Language Models Actually Work](https://beaiexpert.com/articles/how-llms-work.html): Tokens, embeddings, attention and next-token prediction: a clear, in-depth explanation of how large language models turn your prompt into an answer.
+- [Multimodal AI: Images, Audio and Beyond](https://beaiexpert.com/articles/multimodal-ai.html): How AI models see images, hear audio and generate pictures: vision encoders, CLIP, diffusion models, speech recognition and synthesis, real use cases and current limitations.
+- [Prompt Engineering That Actually Works](https://beaiexpert.com/articles/prompt-engineering.html): Practical, durable prompting techniques: giving context, examples, structure, step-by-step reasoning, output formats, and how to iterate on prompts systematically.
+- [Responsible AI: Risks, Safety and Good Practice](https://beaiexpert.com/articles/responsible-ai.html): The real risks of AI — hallucinations, bias, privacy, security, intellectual property and misuse — and practical steps individuals, builders and organizations can take to use AI responsibly.
+
+## Tech Stack
+
+- [The Modern AI Tech Stack, Layer by Layer](https://beaiexpert.com/articles/ai-tech-stack.html): Compute, models, data and retrieval, orchestration, serving, evaluation and applications: an in-depth guide to every layer of the modern AI tech stack.
+- [Running AI Models Locally](https://beaiexpert.com/articles/running-ai-locally.html): How to run open-weight AI models on your own computer: why you'd want to, the hardware you need, quantization explained, and step-by-step setup with Ollama, LM Studio and llama.cpp.
+- [Choosing a Vector Database](https://beaiexpert.com/articles/vector-databases.html): How vector databases work, the indexing trade-offs behind them (HNSW, IVF, quantization), the main options from pgvector to Pinecone, and a practical framework for choosing one.
+
+## Development
+
+- [Building AI Agents with Tool Use](https://beaiexpert.com/articles/ai-agents.html): How AI agents work: tool use (function calling), the agent loop, designing good tools, safety guardrails and when not to build an agent — with a working Python agent loop.
+- [Build a RAG App From Scratch](https://beaiexpert.com/articles/build-rag-app.html): A step-by-step, in-depth guide to retrieval-augmented generation (RAG): load documents, chunk, embed, retrieve and generate grounded answers, with working Python code.
+- [Evaluating LLM Applications](https://beaiexpert.com/articles/evaluating-llm-apps.html): How to measure whether your AI application actually works: building test sets, code-based checks, LLM-as-judge grading, RAG and agent metrics, and running evals continuously.
+- [Fine-Tuning vs. RAG vs. Prompting](https://beaiexpert.com/articles/fine-tuning-vs-rag-vs-prompting.html): When to use prompting, retrieval-augmented generation or fine-tuning to customize an AI model — what each one changes, costs and is good at, with a decision framework.
+
+## About
+
+- [About BeAIExpert](https://beaiexpert.com/about.html): Mission, principles and how to send corrections.
+- [All articles](https://beaiexpert.com/articles/): Index of every article by category.

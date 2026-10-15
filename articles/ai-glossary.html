@@ -6,14 +6,532 @@
   <title>The AI Glossary: 60+ Terms Explained — BeAIExpert</title>
   <meta name="description" content="Plain-English definitions of the most important AI terms — from agents, attention and embeddings to RAG, tokens, transformers and zero-shot — with links to in-depth articles.">
   <link rel="canonical" href="https://beaiexpert.com/articles/ai-glossary.html">
-  <meta property="og:title" content="The AI Glossary: 60+ Terms Explained">
+  <meta property="og:site_name" content="BeAIExpert">
   <meta property="og:type" content="article">
+  <meta property="og:title" content="The AI Glossary: 60+ Terms Explained">
+  <meta property="og:description" content="Plain-English definitions of the most important AI terms — from agents, attention and embeddings to RAG, tokens, transformers and zero-shot — with links to in-depth articles.">
+  <meta property="og:url" content="https://beaiexpert.com/articles/ai-glossary.html">
+  <meta property="og:image" content="https://beaiexpert.com/assets/og/ai-glossary.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="The AI Glossary: 60+ Terms Explained">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="The AI Glossary: 60+ Terms Explained">
+  <meta name="twitter:description" content="Plain-English definitions of the most important AI terms — from agents, attention and embeddings to RAG, tokens, transformers and zero-shot — with links to in-depth articles.">
+  <meta name="twitter:image" content="https://beaiexpert.com/assets/og/ai-glossary.png">
   <meta name="theme-color" content="#4f46e5">
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../assets/styles.css">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "@id": "https://beaiexpert.com/articles/ai-glossary.html#article",
+      "headline": "The AI Glossary: 60+ Terms Explained",
+      "description": "Plain-English definitions of the most important AI terms — from agents, attention and embeddings to RAG, tokens, transformers and zero-shot — with links to in-depth articles.",
+      "image": "https://beaiexpert.com/assets/og/ai-glossary.png",
+      "datePublished": "2026-10-14",
+      "dateModified": "2026-10-14",
+      "author": {
+        "@type": "Organization",
+        "name": "BeAIExpert Team",
+        "url": "https://beaiexpert.com/about.html"
+      },
+      "publisher": {
+        "@id": "https://beaiexpert.com/#organization"
+      },
+      "mainEntityOfPage": "https://beaiexpert.com/articles/ai-glossary.html",
+      "inLanguage": "en",
+      "isAccessibleForFree": true,
+      "articleSection": "Fundamentals"
+    },
+    {
+      "@type": "DefinedTermSet",
+      "@id": "https://beaiexpert.com/articles/ai-glossary.html#terms",
+      "name": "BeAIExpert AI Glossary",
+      "url": "https://beaiexpert.com/articles/ai-glossary.html",
+      "hasDefinedTerm": [
+        {
+          "@type": "DefinedTerm",
+          "name": "Agent",
+          "description": "A system in which an AI model uses tools in a loop — taking actions, observing results and deciding what to do next — until a task is complete.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#agent",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "AGI (Artificial General Intelligence)",
+          "description": "A hypothetical AI able to match or exceed humans across essentially all cognitive tasks. There's no agreed definition or test, and experts disagree on if and when it will arrive.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#agi",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Artificial Intelligence (AI)",
+          "description": "The broad field of building computer systems that perform tasks normally requiring human intelligence, such as understanding language, recognizing images or making decisions.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#ai",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Alignment",
+          "description": "Research and techniques aimed at making AI systems behave in line with human intentions and values — helpful, honest and harmless.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#alignment",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "API (Application Programming Interface)",
+          "description": "A way for programs to talk to each other. Most AI models are used through an API: your code sends text, the provider's servers return the model's response.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#api",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Attention (self-attention)",
+          "description": "The mechanism that lets each token in a transformer gather information from other tokens, so meaning depends on context.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#attention",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Benchmark",
+          "description": "A standard test set used to compare models, e.g. on reasoning, coding or knowledge. Useful but imperfect — always test on your own tasks.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#benchmark",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Bias",
+          "description": "Systematic unfairness in AI outputs, often learned from biased training data.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#bias",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Chain-of-thought",
+          "description": "Having a model work through a problem step by step before answering, which improves accuracy on complex tasks.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#chain-of-thought",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Chunking",
+          "description": "Splitting documents into smaller passages so they can be embedded and retrieved precisely in RAG systems.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#chunking",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "CLIP",
+          "description": "A model that maps images and text into a shared embedding space, enabling image search by description.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#clip",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Context window",
+          "description": "The maximum amount of text (in tokens) a model can consider at once — its entire working memory for a request.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#context-window",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Cosine similarity",
+          "description": "A measure of how similar two vectors are, based on the angle between them. The standard way to compare embeddings.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#cosine-similarity",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Deep learning",
+          "description": "Machine learning using neural networks with many layers. The approach behind nearly all modern AI.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#deep-learning",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Diffusion model",
+          "description": "A type of generative model that creates images (or video, audio) by starting from random noise and removing it step by step, guided by a prompt.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#diffusion",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Embedding",
+          "description": "A vector of numbers representing the meaning of text, images or other data, so similar meanings have nearby vectors.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#embedding",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Evaluation (evals)",
+          "description": "Systematic testing of an AI application's outputs against defined criteria, to measure and track quality.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#eval",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Few-shot prompting",
+          "description": "Including a few examples of the desired input and output in a prompt so the model can follow the pattern.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#few-shot",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Fine-tuning",
+          "description": "Further training a pre-trained model on specific examples to change its behavior, style or skills.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#fine-tuning",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Foundation model",
+          "description": "A large model trained on broad data that can be adapted to many tasks — such as today's large language models.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#foundation-model",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Function calling",
+          "description": "See Tool use.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#function-calling",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Generative AI",
+          "description": "AI that creates new content — text, images, audio, video or code — rather than only classifying or predicting.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#generative-ai",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "GPU (Graphics Processing Unit)",
+          "description": "A processor that performs many calculations in parallel, making it ideal for training and running AI models.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#gpu",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Grounding",
+          "description": "Basing a model's answer on specific provided sources rather than its general training, to improve accuracy and allow verification.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#grounding",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Guardrails",
+          "description": "Rules and checks around an AI system that prevent unwanted inputs, outputs or actions.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#guardrails",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Hallucination",
+          "description": "When a model generates confident but false or made-up information.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#hallucination",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "HNSW",
+          "description": "A graph-based index for fast approximate nearest-neighbor search, widely used in vector databases.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#hnsw",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Hybrid search",
+          "description": "Combining vector (semantic) search with keyword search so both meaning and exact terms are matched.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#hybrid-search",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Inference",
+          "description": "Running a trained model to produce outputs — as opposed to training it.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#inference",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Large Language Model (LLM)",
+          "description": "A very large neural network trained on huge amounts of text to predict the next token, which lets it understand and generate language.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#llm",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Latency",
+          "description": "How long a response takes. For streaming models, often measured as time to first token and tokens per second.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#latency",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "LLM-as-judge",
+          "description": "Using a language model to grade another model's outputs against a rubric.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#llm-as-judge",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "LoRA (Low-Rank Adaptation)",
+          "description": "A parameter-efficient fine-tuning method that trains a small number of extra weights instead of the whole model, making fine-tuning much cheaper.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#lora",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Machine learning (ML)",
+          "description": "Building systems that learn patterns from data instead of following hand-written rules.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#machine-learning",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "MCP (Model Context Protocol)",
+          "description": "An open standard for connecting AI applications to external tools and data sources.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#mcp",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Model",
+          "description": "The trained mathematical function — a large set of learned parameters — that turns inputs into outputs.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#model",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Multimodal",
+          "description": "Able to work with more than one type of data, such as text, images and audio.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#multimodal",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Neural network",
+          "description": "A model made of layers of simple connected units whose connection strengths (weights) are learned from data.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#neural-network",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Open-weight model",
+          "description": "A model whose trained weights are publicly released so anyone can download and run it, subject to its license.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#open-weight",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Overfitting",
+          "description": "When a model (or a prompt) performs well on the examples it was tuned on but poorly on new data.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#overfitting",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Parameters (weights)",
+          "description": "The learned numbers inside a model. Model size is usually given as a parameter count, such as \"8B\" for 8 billion.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#parameters",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Pretraining",
+          "description": "The first, largest training stage, where a model learns from massive general data by predicting the next token.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#pretraining",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Prompt",
+          "description": "The input you give a model: instructions, context, examples and questions.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#prompt",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Prompt engineering",
+          "description": "The practice of designing and iterating on prompts to get reliable, high-quality outputs.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#prompt-engineering",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Prompt injection",
+          "description": "An attack where instructions hidden in content an AI reads try to override its intended behavior.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#prompt-injection",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Quantization",
+          "description": "Storing model weights (or vectors) with fewer bits to save memory and speed up computation, with a small loss of accuracy.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#quantization",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "RAG (Retrieval-Augmented Generation)",
+          "description": "Retrieving relevant information from your own data and adding it to the prompt so the model can answer from it.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#rag",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Reasoning model",
+          "description": "A model trained to \"think\" through problems — often producing internal reasoning before its answer — improving results on complex tasks.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#reasoning-model",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Reranker",
+          "description": "A model that re-scores retrieved results against the query for higher precision, typically applied to the top results of a first search.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#reranker",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "RLHF (Reinforcement Learning from Human Feedback)",
+          "description": "A training method that uses human preferences between responses to make models more helpful and safe.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#rlhf",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Semantic search",
+          "description": "Searching by meaning rather than exact words, usually with embeddings.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#semantic-search",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Structured output",
+          "description": "Constraining a model to return data in a defined format, such as JSON matching a schema.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#structured-output",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "System prompt",
+          "description": "Standing instructions that set a model's role, rules and context for a whole conversation.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#system-prompt",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Temperature",
+          "description": "A setting that controls randomness in generation: low is focused and consistent, high is varied and creative.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#temperature",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Token",
+          "description": "A chunk of text — a word or part of a word — that a model processes. Pricing and limits are counted in tokens.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#token",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Tool use",
+          "description": "A model's ability to request calls to external functions (search, databases, APIs), which your code executes. Also called function calling.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#tool-use",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Training data",
+          "description": "The data a model learns from. Its content, quality and cutoff date shape what the model knows.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#training-data",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Transformer",
+          "description": "The neural network architecture, introduced in 2017, behind almost all modern language models; built around attention.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#transformer",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Vector",
+          "description": "An ordered list of numbers. In AI, vectors represent data such as embeddings.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#vector",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Vector database",
+          "description": "A database that stores embeddings and quickly finds the ones most similar to a query.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#vector-database",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Workflow",
+          "description": "A fixed, code-controlled sequence of AI steps — more predictable than an agent.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#workflow",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Zero-shot",
+          "description": "Asking a model to do a task with no examples, relying only on instructions.",
+          "url": "https://beaiexpert.com/articles/ai-glossary.html#zero-shot",
+          "inDefinedTermSet": "https://beaiexpert.com/articles/ai-glossary.html#terms"
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://beaiexpert.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Articles",
+          "item": "https://beaiexpert.com/articles/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "The AI Glossary: 60+ Terms Explained",
+          "item": "https://beaiexpert.com/articles/ai-glossary.html"
+        }
+      ]
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://beaiexpert.com/#organization",
+      "name": "BeAIExpert",
+      "url": "https://beaiexpert.com/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://beaiexpert.com/assets/logo-512.png",
+        "width": 512,
+        "height": 512
+      },
+      "email": "hello@beaiexpert.com",
+      "description": "Free, in-depth AI education for everyone."
+    }
+  ]
+}
+  </script>
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
@@ -33,6 +551,7 @@
         <a href="../#stack">Tech Stack</a>
         <a href="../#roadmap">Roadmap</a>
         <a href="../#faq">FAQ</a>
+        <a href="../about.html">About</a>
       </nav>
     </div>
   </header>
@@ -44,7 +563,7 @@
         <span class="tag tag--fundamentals">Fundamentals</span>
         <h1>The AI Glossary: 60+ Terms Explained</h1>
         <p class="article__dek">A plain-English reference for the words you'll meet when learning AI. Bookmark it — and follow the links to go deeper on any term.</p>
-        <p class="article__meta">Reference · All levels</p>
+        <p class="article__meta"><span class="article__byline">By <a href="../about.html">BeAIExpert Team</a></span> · Updated <time datetime="2026-10-14">14 Oct 2026</time> · Reference · All levels</p>
       </header>
 
       <div class="container container--prose prose">
@@ -228,6 +747,7 @@
         <a href="./">Articles</a>
         <a href="ai-tech-stack.html">Tech Stack</a>
         <a href="../#faq">FAQ</a>
+        <a href="../about.html">About</a>
         <a href="mailto:hello@beaiexpert.com">Contact</a>
       </nav>
       <p class="footer__copy">© <span id="year">2026</span> BeAIExpert.com · Free AI education for everyone.</p>
