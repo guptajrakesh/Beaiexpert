@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Build a RAG App — Episode 1</title>
+<style>
+  :root {
+    --bg: #0b1020; --panel: #141c3a; --panel-2: #1b2550; --border: #2a3768;
+    --text: #e8ecf8; --muted: #a3adc8; --brand: #818cf8; --brand-2: #22d3ee;
+    --good: #34d399; --bad: #f87171; --warn: #fbbf24;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; }
+  body {
+    font-family: "Inter", sans-serif; color: var(--text);
+    background:
+      radial-gradient(900px 600px at 15% 10%, rgba(99,102,241,.18), transparent 70%),
+      radial-gradient(800px 600px at 90% 90%, rgba(34,211,238,.12), transparent 70%),
+      var(--bg);
+  }
+  .mono { font-family: "DejaVu Sans Mono", monospace; }
+
+  /* chrome */
+  .brand { position: absolute; top: 40px; left: 56px; display: flex; align-items: center; gap: 14px; font-size: 26px; font-weight: 600; z-index: 5; }
+  .brand b { color: var(--brand); font-weight: 800; }
+  .logo { width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg,#4f46e5,#06b6d4); display: grid; place-items: center; font-weight: 800; font-size: 26px; color: #fff; }
+  .ep-label { position: absolute; top: 48px; right: 56px; font-size: 20px; color: var(--muted); letter-spacing: .12em; text-transform: uppercase; font-weight: 600; z-index: 5; }
+  .progress { position: absolute; left: 0; top: 0; height: 6px; background: linear-gradient(90deg,#6366f1,#22d3ee); z-index: 6; }
+  .caption-wrap { position: absolute; left: 0; right: 0; bottom: 56px; display: flex; justify-content: center; z-index: 5; }
+  .caption { max-width: 1480px; text-align: center; font-size: 38px; line-height: 1.35; font-weight: 500; padding: 16px 32px; border-radius: 16px; background: rgba(6,9,22,.78); }
+
+  /* scenes */
+  .scene { position: absolute; inset: 0; padding: 130px 140px 200px; opacity: 0; }
+  .caps { display: none; }
+  .eyebrow { font-size: 24px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--brand-2); margin-bottom: 18px; }
+  h1 { font-size: 92px; font-weight: 800; line-height: 1.05; letter-spacing: -.02em; }
+  h2 { font-size: 60px; font-weight: 800; letter-spacing: -.02em; margin-bottom: 40px; }
+  .grad { background: linear-gradient(90deg,#818cf8,#22d3ee); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .center { text-align: center; }
+  .row { display: flex; gap: 32px; align-items: stretch; }
+  .card { background: var(--panel); border: 2px solid var(--border); border-radius: 24px; padding: 32px 36px; }
+  .card h3 { font-size: 36px; margin-bottom: 12px; }
+  .card p { font-size: 28px; color: var(--muted); line-height: 1.4; }
+  .big-emoji { font-size: 64px; margin-bottom: 12px; }
+
+  /* chat */
+  .chat { width: 900px; display: flex; flex-direction: column; gap: 24px; }
+  .bubble { font-size: 32px; line-height: 1.4; padding: 22px 28px; border-radius: 24px; max-width: 820px; }
+  .user { align-self: flex-end; background: #4f46e5; border-bottom-right-radius: 6px; }
+  .ai { align-self: flex-start; background: var(--panel-2); border: 2px solid var(--border); border-bottom-left-radius: 6px; }
+  .who { font-size: 20px; color: var(--muted); font-weight: 700; margin-bottom: 6px; text-transform: uppercase; letter-spacing: .1em; }
+  .verdict { font-size: 30px; font-weight: 700; padding: 14px 24px; border-radius: 14px; align-self: flex-start; }
+  .verdict.bad { color: var(--bad); background: rgba(248,113,113,.12); border: 2px solid rgba(248,113,113,.4); }
+  .verdict.good { color: var(--good); background: rgba(52,211,153,.12); border: 2px solid rgba(52,211,153,.4); }
+  .cite { display: inline-block; font-size: 22px; font-weight: 700; color: var(--brand-2); background: rgba(34,211,238,.12); border-radius: 8px; padding: 2px 10px; margin-left: 4px; }
+  .source { display: flex; gap: 14px; align-items: center; font-size: 26px; color: var(--muted); background: var(--panel); border: 2px dashed var(--border); border-radius: 14px; padding: 14px 20px; align-self: flex-start; }
+
+  /* flow diagrams */
+  .flow { display: flex; align-items: center; gap: 18px; }
+  .node { background: var(--panel); border: 2px solid var(--border); border-radius: 22px; padding: 26px 24px; text-align: center; min-width: 250px; }
+  .node .e { font-size: 56px; }
+  .node .t { font-size: 30px; font-weight: 700; margin-top: 8px; }
+  .node .s { font-size: 22px; color: var(--muted); margin-top: 6px; line-height: 1.3; }
+  .node.sm { min-width: 0; padding: 18px 16px; flex: 1; }
+  .node.sm .e { font-size: 44px; } .node.sm .t { font-size: 24px; }
+  .arrow { font-size: 48px; color: var(--brand); font-weight: 800; }
+  .phase { display: inline-block; font-size: 26px; font-weight: 700; padding: 8px 20px; border-radius: 999px; background: rgba(129,140,248,.15); color: var(--brand); margin-bottom: 20px; }
+
+  /* context window */
+  .cw { position: relative; height: 120px; margin: 30px 0 10px; }
+  .cw-window { position: absolute; left: 0; top: 0; width: 1000px; height: 120px; border: 4px dashed var(--brand-2); border-radius: 18px; }
+  .cw-label { position: absolute; left: 0; top: -44px; font-size: 26px; color: var(--brand-2); font-weight: 700; }
+  .cw-bar { position: absolute; left: 14px; top: 16px; height: 88px; width: 1600px; border-radius: 12px; transform-origin: left center;
+            background: linear-gradient(90deg, #6366f1 0 61%, #ef4444 61% 100%); display: flex; align-items: center; padding-left: 24px; font-size: 30px; font-weight: 700; }
+  .cw-over { position: absolute; left: 1080px; top: 16px; height: 88px; display: flex; align-items: center; font-size: 34px; font-weight: 800; color: #fff; }
+  .vec { display: grid; grid-template-columns: 860px 80px 1fr; align-items: center; white-space: pre; }
+  .points { display: flex; gap: 28px; margin-top: 70px; }
+  .points .card { flex: 1; }
+
+  /* embedding map */
+  .map { position: relative; width: 1640px; height: 600px; margin: 0 auto; border-radius: 28px; background: var(--panel); border: 2px solid var(--border); overflow: hidden; }
+  .dot { position: absolute; width: 26px; height: 26px; border-radius: 50%; transform: translate(-50%,-50%); }
+  .dot.v { background: #34d399; } .dot.x { background: #fbbf24; } .dot.i { background: #f472b6; }
+  .cluster { position: absolute; font-size: 26px; font-weight: 700; padding: 6px 14px; border-radius: 10px; background: rgba(11,16,32,.7); }
+  .q { position: absolute; width: 38px; height: 38px; border-radius: 50%; background: #fff; transform: translate(-50%,-50%); box-shadow: 0 0 30px #fff; }
+  .ring { position: absolute; width: 38px; height: 38px; border-radius: 50%; border: 4px solid #fff; transform: translate(-50%,-50%); }
+  .qlabel { position: absolute; font-size: 28px; font-weight: 700; background: #fff; color: #0b1020; padding: 10px 18px; border-radius: 12px; }
+  svg.lines { position: absolute; inset: 0; }
+
+  /* prompt box */
+  .prompt { margin-top: 36px; background: #070b18; border: 2px solid var(--border); border-radius: 20px; padding: 26px 32px; font-size: 25px; line-height: 1.6; }
+  .prompt .l { white-space: pre; }
+  .k { color: #fbbf24; } .c { color: #22d3ee; } .m { color: var(--muted); }
+
+  /* lists */
+  .checks { list-style: none; display: grid; gap: 22px; }
+  .checks li { font-size: 40px; font-weight: 600; display: flex; gap: 20px; align-items: center; }
+  .checks li span { color: var(--good); font-weight: 800; }
+  .chips { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 50px; }
+  .chip { font-size: 28px; padding: 12px 22px; border-radius: 999px; border: 2px solid var(--border); background: var(--panel); color: var(--muted); }
+  .eps { list-style: none; display: grid; gap: 16px; }
+  .eps li { display: flex; align-items: center; gap: 24px; font-size: 36px; font-weight: 600; background: var(--panel); border: 2px solid var(--border); border-radius: 18px; padding: 16px 28px; }
+  .eps .n { width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; background: linear-gradient(135deg,#6366f1,#22d3ee); color: #fff; flex: none; }
+  .eps li.now { border-color: var(--brand); }
+  .eps .tag { margin-left: auto; font-size: 22px; color: var(--brand-2); font-weight: 700; }
+</style>
+</head>
+<body>
+  <div class="progress" id="progress"></div>
+  <div class="brand" id="brand"><div class="logo">A</div><span>Be<b>AI</b>Expert</span></div>
+  <div class="ep-label" id="eplabel">Build a RAG App · Episode 1</div>
+  <div class="caption-wrap"><div class="caption" id="caption"></div></div>
+
+  <!-- 1. Title -->
+  <section class="scene" data-dur="7" data-chrome="off" style="display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding-bottom:160px">
+    <div data-in="0.2" class="logo" style="width:110px;height:110px;font-size:64px;border-radius:28px;margin-bottom:36px">A</div>
+    <div data-in="0.6" class="eyebrow">Build a RAG App · Episode 1</div>
+    <h1 data-in="1.0">What is RAG —<br><span class="grad">and why does it matter?</span></h1>
+    <p data-in="1.8" style="font-size:34px;color:var(--muted);margin-top:28px">Retrieval-Augmented Generation, explained from scratch</p>
+    <div class="caps">
+      <i data-at="0.8">Welcome to BeAIExpert. In this series, we'll build a RAG application from scratch.</i>
+    </div>
+  </section>
+
+  <!-- 2. The problem -->
+  <section class="scene" data-dur="28">
+    <div class="eyebrow" data-in="0">The problem</div>
+    <div class="row" style="gap:70px">
+      <div class="chat">
+        <div class="bubble user" data-in="1.2"><div class="who" style="color:#c7d2fe">You</div>How many vacation days do I get at Acme Corp?</div>
+        <div class="bubble ai" data-in="5"><div class="who">AI assistant</div>Most companies offer around 15 days of paid vacation per year, so you likely get 15 days.</div>
+        <div class="verdict bad" data-in="8.5">✗ Wrong — Acme's policy gives 25 days</div>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:24px">
+        <div class="card" data-in="12"><h3>🔒 Private data</h3><p>The model was never trained on your company's documents.</p></div>
+        <div class="card" data-in="18"><h3>📅 Knowledge cutoff</h3><p>Its training data is frozen at a point in time.</p></div>
+        <div class="card" data-in="23" style="border-color:var(--warn)"><h3 style="color:var(--warn)">→ So it guesses. Confidently.</h3></div>
+      </div>
+    </div>
+    <div class="caps">
+      <i data-at="0.5">Let's start with a problem. Imagine asking an AI assistant a question about your own company.</i>
+      <i data-at="6">It answers instantly, and it sounds confident. But the answer is wrong.</i>
+      <i data-at="12">Why? The model was never trained on your company's private documents.</i>
+      <i data-at="18">And its knowledge is frozen at a training cutoff date, so it can't know anything newer.</i>
+      <i data-at="23">When a model lacks information, it doesn't stay silent. It produces a plausible guess.</i>
+    </div>
+  </section>
+
+  <!-- 3. Why not paste everything -->
+  <section class="scene" data-dur="24">
+    <div class="eyebrow" data-in="0">Idea #1</div>
+    <h2 data-in="0.3">Why not paste every document into the prompt?</h2>
+    <div class="cw" style="margin-top:90px">
+      <div class="cw-label" data-in="6">The model's context window</div>
+      <div class="cw-window" data-in="6"></div>
+      <div class="cw-bar" data-grow="9,4">📚 Your documents: 5,000 pages</div>
+      <div class="cw-over" data-in="12.5">✗ Doesn't fit</div>
+    </div>
+    <div class="points">
+      <div class="card" data-in="13"><h3>🚫 Too big</h3><p>Real document collections don't fit.</p></div>
+      <div class="card" data-in="16.5"><h3>💸 Slow &amp; costly</h3><p>Every question re-reads everything.</p></div>
+      <div class="card" data-in="19"><h3>🔎 Details get lost</h3><p>The key sentence drowns in noise.</p></div>
+    </div>
+    <div class="caps">
+      <i data-at="0.5">One idea is to paste all your documents into every prompt.</i>
+      <i data-at="6">That works for a few pages. But a real company has thousands.</i>
+      <i data-at="11">They won't fit in the model's context window. And even when they do...</i>
+      <i data-at="16">...every question becomes slow and expensive, and the important detail gets lost in the noise.</i>
+    </div>
+  </section>
+
+  <!-- 4. Open-book exam -->
+  <section class="scene" data-dur="22">
+    <div class="eyebrow" data-in="0">A better way to think about it</div>
+    <div class="row" style="margin-top:20px">
+      <div class="card" data-in="3.5" style="flex:1"><div class="big-emoji">📕</div><h3>Closed-book exam</h3><p>Answer from memory.<br>Might misremember — or make something up.</p></div>
+      <div class="card" data-in="9.5" style="flex:1;border-color:var(--good)"><div class="big-emoji">📖</div><h3>Open-book exam</h3><p>Look up the right page first, then answer.<br>Accurate — and you can cite the source.</p></div>
+    </div>
+    <p class="center" data-in="16.5" style="font-size:52px;font-weight:800;margin-top:60px">RAG = giving the AI an <span class="grad">open-book exam</span></p>
+    <div class="caps">
+      <i data-at="0.5">Here's a better way to think about it.</i>
+      <i data-at="4">A plain language model is like a student taking a closed-book exam: it answers from memory.</i>
+      <i data-at="10">RAG turns it into an open-book exam. First look up the relevant pages, then answer using them.</i>
+      <i data-at="16.5">Retrieval-Augmented Generation: retrieve the right information, then generate the answer.</i>
+    </div>
+  </section>
+
+  <!-- 5. The name -->
+  <section class="scene" data-dur="16">
+    <div class="eyebrow" data-in="0">The name says it all</div>
+    <div class="row" style="margin-top:60px">
+      <div class="card" data-in="3.5" style="flex:1"><div class="big-emoji">🔍</div><h3><span class="grad">R</span>etrieval</h3><p>Search your documents for the passages that matter.</p></div>
+      <div class="card" data-in="8" style="flex:1"><div class="big-emoji">➕</div><h3><span class="grad">A</span>ugmented</h3><p>Add those passages to the prompt.</p></div>
+      <div class="card" data-in="11.5" style="flex:1"><div class="big-emoji">✍️</div><h3><span class="grad">G</span>eneration</h3><p>The LLM writes an answer grounded in them.</p></div>
+    </div>
+    <div class="caps">
+      <i data-at="0.5">The name describes the three steps.</i>
+      <i data-at="3.5">Retrieval: search your documents for the passages that matter for this question.</i>
+      <i data-at="8">Augmented: add those passages to the prompt.</i>
+      <i data-at="11.5">Generation: the language model writes an answer grounded in them.</i>
+    </div>
+  </section>
+
+  <!-- 6. Indexing -->
+  <section class="scene" data-dur="32">
+    <div class="phase" data-in="0">Phase 1 · Indexing — done once, ahead of time</div>
+    <div class="flow" style="margin-top:40px">
+      <div class="node" data-in="6"><div class="e">📄</div><div class="t">Documents</div><div class="s">PDFs, pages,<br>policies, notes</div></div>
+      <div class="arrow" data-in="10.5">→</div>
+      <div class="node" data-in="11"><div class="e">✂️</div><div class="t">Chunks</div><div class="s">small passages<br>of text</div></div>
+      <div class="arrow" data-in="16.5">→</div>
+      <div class="node" data-in="17"><div class="e">🔢</div><div class="t">Embeddings</div><div class="s">numbers that<br>capture meaning</div></div>
+      <div class="arrow" data-in="23.5">→</div>
+      <div class="node" data-in="24"><div class="e">🗄️</div><div class="t">Vector index</div><div class="s">ready to<br>search</div></div>
+    </div>
+    <div class="prompt mono" data-in="18.5" style="margin-top:50px;font-size:27px">
+      <div class="vec"><span class="m">"Employees receive 25 days of paid vacation..."</span><span class="arrow" style="font-size:32px">→</span><span class="c">[ 0.12, -0.53,  0.88,  0.07, ... ]</span></div>
+      <div class="vec"><span class="m">"Expense reports are due by the 5th..."</span><span class="arrow" style="font-size:32px">→</span><span class="c">[-0.41,  0.22,  0.10,  0.63, ... ]</span></div>
+    </div>
+    <div class="caps">
+      <i data-at="0.5">A RAG system works in two phases. The first is indexing, which you do once, ahead of time.</i>
+      <i data-at="6.5">Start with your documents: PDFs, web pages, policies, notes.</i>
+      <i data-at="11">Split them into smaller passages, called chunks, so we can find precise pieces later.</i>
+      <i data-at="17">Turn each chunk into an embedding: a list of numbers that captures its meaning.</i>
+      <i data-at="24">Store those embeddings in an index, ready to be searched.</i>
+    </div>
+  </section>
+
+  <!-- 7. Embedding map -->
+  <section class="scene" data-dur="26" style="padding-top:120px">
+    <div class="map">
+      <div class="cluster" data-in="6" style="left:120px;top:60px;color:#34d399">Vacation &amp; leave</div>
+      <div class="dot v" data-in="1.0" data-anim="pop" style="left:300px;top:210px"></div>
+      <div class="dot v" data-in="1.2" data-anim="pop" style="left:380px;top:170px"></div>
+      <div class="dot v" data-in="1.4" data-anim="pop" style="left:360px;top:270px"></div>
+      <div class="dot v" data-in="1.6" data-anim="pop" style="left:250px;top:300px"></div>
+      <div class="cluster" data-in="6.5" style="left:1180px;top:70px;color:#fbbf24">Expenses</div>
+      <div class="dot x" data-in="1.8" data-anim="pop" style="left:1290px;top:200px"></div>
+      <div class="dot x" data-in="2.0" data-anim="pop" style="left:1380px;top:250px"></div>
+      <div class="dot x" data-in="2.2" data-anim="pop" style="left:1250px;top:290px"></div>
+      <div class="cluster" data-in="7" style="left:700px;top:470px;color:#f472b6">IT &amp; passwords</div>
+      <div class="dot i" data-in="2.4" data-anim="pop" style="left:820px;top:410px"></div>
+      <div class="dot i" data-in="2.6" data-anim="pop" style="left:930px;top:380px"></div>
+      <div class="dot i" data-in="2.8" data-anim="pop" style="left:880px;top:450px"></div>
+      <svg class="lines" width="1640" height="600">
+        <line data-in="16" x1="470" y1="300" x2="380" y2="170" stroke="#fff" stroke-width="3" stroke-dasharray="8 8"/>
+        <line data-in="16.3" x1="470" y1="300" x2="360" y2="270" stroke="#fff" stroke-width="3" stroke-dasharray="8 8"/>
+        <line data-in="16.6" x1="470" y1="300" x2="300" y2="210" stroke="#fff" stroke-width="3" stroke-dasharray="8 8"/>
+      </svg>
+      <div class="ring" data-pulse="11.5" style="left:470px;top:300px"></div>
+      <div class="q" data-in="11" data-anim="pop" style="left:470px;top:300px"></div>
+      <div class="qlabel" data-in="11.5" style="left:520px;top:236px">❓ "How many vacation days do I get?"</div>
+    </div>
+    <div class="caps">
+      <i data-at="0.5">Why embeddings? Picture every chunk as a point on a map of meaning.</i>
+      <i data-at="6">Chunks about similar topics end up close together.</i>
+      <i data-at="11">When a question arrives, we turn it into a point on the same map...</i>
+      <i data-at="16">...and the closest chunks are the most relevant, even if they use completely different words.</i>
+      <i data-at="22">That's semantic search, and it's the heart of retrieval.</i>
+    </div>
+  </section>
+
+  <!-- 8. Query pipeline -->
+  <section class="scene" data-dur="34" style="padding-top:120px">
+    <div class="phase" data-in="0">Phase 2 · Answering — every question</div>
+    <div class="flow" style="gap:12px">
+      <div class="node sm" data-in="2"><div class="e">❓</div><div class="t">Question</div></div>
+      <div class="arrow" data-in="5">→</div>
+      <div class="node sm" data-in="5.3"><div class="e">🔢</div><div class="t">Embed it</div></div>
+      <div class="arrow" data-in="7.5">→</div>
+      <div class="node sm" data-in="7.8"><div class="e">🔍</div><div class="t">Top matches</div></div>
+      <div class="arrow" data-in="11">→</div>
+      <div class="node sm" data-in="11.3"><div class="e">📝</div><div class="t">Build prompt</div></div>
+      <div class="arrow" data-in="26">→</div>
+      <div class="node sm" data-in="26.3"><div class="e">🤖</div><div class="t">LLM</div></div>
+      <div class="arrow" data-in="28.5">→</div>
+      <div class="node sm" data-in="28.8" style="border-color:var(--good)"><div class="e">✅</div><div class="t">Answer</div></div>
+    </div>
+    <div class="prompt mono">
+      <div class="l k" data-in="13">Answer using ONLY the context below.</div>
+      <div class="l k" data-in="13.6">If the answer isn't there, say you don't know.</div>
+      <div class="l" data-in="14.4"> </div>
+      <div class="l" data-in="14.4">Context:</div>
+      <div class="l" data-in="15.2"><span class="c">[1]</span> Employees receive 25 days of paid vacation per year. <span class="m">(handbook.pdf)</span></div>
+      <div class="l" data-in="16"><span class="c">[2]</span> Up to 5 unused days can be carried over to next year. <span class="m">(handbook.pdf)</span></div>
+      <div class="l" data-in="16.8"> </div>
+      <div class="l" data-in="16.8">Question: How many vacation days do I get?</div>
+    </div>
+    <div class="caps">
+      <i data-at="0.5">Phase two happens every time someone asks a question.</i>
+      <i data-at="5">We embed the question with the same model, and find the closest chunks in the index.</i>
+      <i data-at="11">Then we build a prompt: clear instructions, the retrieved passages, and the question.</i>
+      <i data-at="19">Notice the instructions: use only this context, and say "I don't know" if the answer isn't there.</i>
+      <i data-at="26">Finally, the language model reads it all and writes the answer.</i>
+    </div>
+  </section>
+
+  <!-- 9. Result -->
+  <section class="scene" data-dur="20">
+    <div class="eyebrow" data-in="0">Same question — with RAG</div>
+    <div class="chat" style="width:1300px">
+      <div class="bubble user" data-in="1.2"><div class="who" style="color:#c7d2fe">You</div>How many vacation days do I get at Acme Corp?</div>
+      <div class="bubble ai" data-in="4.5" style="max-width:1150px"><div class="who">AI assistant · with RAG</div>You get 25 days of paid vacation per year <span class="cite">[1]</span>, and you can carry up to 5 unused days over to the next year <span class="cite">[2]</span>.</div>
+      <div class="source" data-in="11">📄 <b style="color:var(--text)">handbook.pdf</b> — Section 4: Leave policy</div>
+      <div class="verdict good" data-in="13">✓ Correct — and you can check the source</div>
+    </div>
+    <div class="caps">
+      <i data-at="0.5">Let's ask the same question again, this time with RAG.</i>
+      <i data-at="5">The answer is correct, because it comes from the actual policy document.</i>
+      <i data-at="11">And it cites its sources, so anyone can check where the answer came from.</i>
+      <i data-at="16">That's the difference between a confident guess and a grounded answer.</i>
+    </div>
+  </section>
+
+  <!-- 10. When to use -->
+  <section class="scene" data-dur="22">
+    <h2 data-in="0">When should you use RAG?</h2>
+    <ul class="checks">
+      <li data-in="3.5"><span>✓</span> Answers live in private or internal documents</li>
+      <li data-in="8"><span>✓</span> Information changes often</li>
+      <li data-in="10.5"><span>✓</span> Far too much to fit in a prompt</li>
+      <li data-in="13"><span>✓</span> Answers must cite sources people can verify</li>
+    </ul>
+    <div class="chips">
+      <div class="chip" data-in="17">💬 Customer support</div>
+      <div class="chip" data-in="17.5">🏢 Internal knowledge bases</div>
+      <div class="chip" data-in="18">⚖️ Policy &amp; legal Q&amp;A</div>
+      <div class="chip" data-in="18.5">🔎 Document search</div>
+    </div>
+    <div class="caps">
+      <i data-at="0.5">So when should you use RAG?</i>
+      <i data-at="3.5">When the answers live in private or internal documents...</i>
+      <i data-at="8">...when information changes often, or there's far too much to fit in a prompt...</i>
+      <i data-at="13">...and whenever answers need sources people can verify.</i>
+      <i data-at="17">That's why RAG powers so many real assistants: customer support, internal knowledge bases, and document search.</i>
+    </div>
+  </section>
+
+  <!-- 11. Series roadmap -->
+  <section class="scene" data-dur="22" style="padding-top:110px">
+    <h2 data-in="0" style="margin-bottom:28px">What we'll build in this series</h2>
+    <ul class="eps">
+      <li class="now" data-in="1.5"><span class="n">1</span>What is RAG — and why it matters<span class="tag">YOU ARE HERE</span></li>
+      <li data-in="6"><span class="n">2</span>Loading and chunking documents</li>
+      <li data-in="8.5"><span class="n">3</span>Embeddings and semantic search</li>
+      <li data-in="12"><span class="n">4</span>Retrieving the right passages</li>
+      <li data-in="14"><span class="n">5</span>Generating grounded answers with citations</li>
+      <li data-in="17"><span class="n">6</span>Evaluating and improving your RAG app</li>
+    </ul>
+    <div class="caps">
+      <i data-at="0.5">In this series, we'll build a complete RAG application step by step, in Python.</i>
+      <i data-at="6">Next, we'll load and chunk documents, then create embeddings and semantic search.</i>
+      <i data-at="12">Then we'll retrieve the right passages, and generate grounded answers with citations...</i>
+      <i data-at="17">...and finally measure and improve quality, like a real production system.</i>
+    </div>
+  </section>
+
+  <!-- 12. Outro -->
+  <section class="scene" data-dur="9" data-chrome="off" style="display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding-bottom:160px">
+    <div data-in="0.2" class="logo" style="width:96px;height:96px;font-size:56px;border-radius:24px;margin-bottom:30px">A</div>
+    <div data-in="0.5" class="eyebrow">Up next · Episode 2</div>
+    <h1 data-in="0.8" style="font-size:76px">Loading &amp; chunking documents</h1>
+    <p data-in="2" style="font-size:36px;color:var(--muted);margin-top:34px">Read the full guide free at <b class="grad">beaiexpert.com</b></p>
+    <div class="caps">
+      <i data-at="0.5">Want to read ahead? The full guide is free at beaiexpert.com.</i>
+      <i data-at="4.5">See you in episode two.</i>
+    </div>
+  </section>
+
+<script>
+  const clamp = (x) => Math.max(0, Math.min(1, x));
+  const ease = (p) => 1 - Math.pow(1 - p, 3);
+  const scenes = [...document.querySelectorAll('.scene')].map(el => ({
+    el, dur: +el.dataset.dur, chrome: el.dataset.chrome !== 'off',
+    caps: [...el.querySelectorAll('.caps i')].map(i => ({ at: +i.dataset.at, text: i.textContent })),
+  }));
+  let acc = 0;
+  scenes.forEach(s => { s.start = acc; acc += s.dur; });
+  window.TOTAL = acc;
+  const FADE = 0.45;
+  const caption = document.getElementById('caption');
+
+  window.render = function (T) {
+    document.getElementById('progress').style.width = (T / window.TOTAL * 100) + '%';
+    let active = null;
+    for (const s of scenes) {
+      const t = T - s.start;
+      if (t < 0 || t >= s.dur) { s.el.style.opacity = 0; s.el.style.visibility = 'hidden'; continue; }
+      active = s;
+      s.el.style.visibility = 'visible';
+      s.el.style.opacity = Math.min(clamp(t / FADE), clamp((s.dur - t) / FADE));
+
+      s.el.querySelectorAll('[data-in]').forEach(n => {
+        const p = ease(clamp((t - +n.dataset.in) / 0.6));
+        n.style.opacity = p;
+        const anim = n.dataset.anim;
+        if (n.tagName === 'line') return;
+        const base = n.classList.contains('dot') || n.classList.contains('q') ? 'translate(-50%,-50%) ' : '';
+        n.style.transform = anim === 'pop' ? base + `scale(${0.3 + 0.7 * p})` : base + `translateY(${(1 - p) * 28}px)`;
+      });
+      s.el.querySelectorAll('[data-grow]').forEach(n => {
+        const [st, d] = n.dataset.grow.split(',').map(Number);
+        const p = ease(clamp((t - st) / d));
+        n.style.transform = `scaleX(${p})`;
+        n.style.opacity = p > 0 ? 1 : 0;
+      });
+      s.el.querySelectorAll('[data-pulse]').forEach(n => {
+        const st = +n.dataset.pulse;
+        if (t < st) { n.style.opacity = 0; return; }
+        const ph = ((t - st) % 1.6) / 1.6;
+        n.style.opacity = 0.8 * (1 - ph);
+        n.style.transform = `translate(-50%,-50%) scale(${1 + ph * 2.6})`;
+      });
+
+      // caption
+      const t2 = t;
+      let cur = null;
+      for (const c of s.caps) if (c.at <= t2) cur = c;
+      if (cur) {
+        if (caption.textContent !== cur.text) caption.textContent = cur.text;
+        const next = s.caps.find(c => c.at > cur.at);
+        const end = next ? next.at : s.dur;
+        caption.parentElement.style.opacity = Math.min(clamp((t2 - cur.at) / 0.25), clamp((end - t2) / 0.25));
+      } else caption.parentElement.style.opacity = 0;
+    }
+    const chromeOn = active ? active.chrome : true;
+    document.getElementById('brand').style.opacity = chromeOn ? 1 : 0;
+    document.getElementById('eplabel').style.opacity = chromeOn ? 1 : 0;
+  };
+  render(0);
+</script>
+</body>
+</html>

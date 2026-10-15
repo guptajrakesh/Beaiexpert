@@ -1,0 +1,191 @@
+1
+00:00:00,800 --> 00:00:06,850
+Welcome to BeAIExpert. In this series, we'll build a RAG application from scratch.
+
+2
+00:00:07,500 --> 00:00:12,850
+Let's start with a problem. Imagine asking an AI assistant a question about your own company.
+
+3
+00:00:13,000 --> 00:00:18,850
+It answers instantly, and it sounds confident. But the answer is wrong.
+
+4
+00:00:19,000 --> 00:00:24,850
+Why? The model was never trained on your company's private documents.
+
+5
+00:00:25,000 --> 00:00:29,850
+And its knowledge is frozen at a training cutoff date, so it can't know anything newer.
+
+6
+00:00:30,000 --> 00:00:34,850
+When a model lacks information, it doesn't stay silent. It produces a plausible guess.
+
+7
+00:00:35,500 --> 00:00:40,850
+One idea is to paste all your documents into every prompt.
+
+8
+00:00:41,000 --> 00:00:45,850
+That works for a few pages. But a real company has thousands.
+
+9
+00:00:46,000 --> 00:00:50,850
+They won't fit in the model's context window. And even when they do...
+
+10
+00:00:51,000 --> 00:00:58,850
+...every question becomes slow and expensive, and the important detail gets lost in the noise.
+
+11
+00:00:59,500 --> 00:01:02,850
+Here's a better way to think about it.
+
+12
+00:01:03,000 --> 00:01:08,850
+A plain language model is like a student taking a closed-book exam: it answers from memory.
+
+13
+00:01:09,000 --> 00:01:15,350
+RAG turns it into an open-book exam. First look up the relevant pages, then answer using them.
+
+14
+00:01:15,500 --> 00:01:20,850
+Retrieval-Augmented Generation: retrieve the right information, then generate the answer.
+
+15
+00:01:21,500 --> 00:01:24,350
+The name describes the three steps.
+
+16
+00:01:24,500 --> 00:01:28,850
+Retrieval: search your documents for the passages that matter for this question.
+
+17
+00:01:29,000 --> 00:01:32,350
+Augmented: add those passages to the prompt.
+
+18
+00:01:32,500 --> 00:01:36,850
+Generation: the language model writes an answer grounded in them.
+
+19
+00:01:37,500 --> 00:01:43,350
+A RAG system works in two phases. The first is indexing, which you do once, ahead of time.
+
+20
+00:01:43,500 --> 00:01:47,850
+Start with your documents: PDFs, web pages, policies, notes.
+
+21
+00:01:48,000 --> 00:01:53,850
+Split them into smaller passages, called chunks, so we can find precise pieces later.
+
+22
+00:01:54,000 --> 00:02:00,850
+Turn each chunk into an embedding: a list of numbers that captures its meaning.
+
+23
+00:02:01,000 --> 00:02:08,850
+Store those embeddings in an index, ready to be searched.
+
+24
+00:02:09,500 --> 00:02:14,850
+Why embeddings? Picture every chunk as a point on a map of meaning.
+
+25
+00:02:15,000 --> 00:02:19,850
+Chunks about similar topics end up close together.
+
+26
+00:02:20,000 --> 00:02:24,850
+When a question arrives, we turn it into a point on the same map...
+
+27
+00:02:25,000 --> 00:02:30,850
+...and the closest chunks are the most relevant, even if they use completely different words.
+
+28
+00:02:31,000 --> 00:02:34,850
+That's semantic search, and it's the heart of retrieval.
+
+29
+00:02:35,500 --> 00:02:39,850
+Phase two happens every time someone asks a question.
+
+30
+00:02:40,000 --> 00:02:45,850
+We embed the question with the same model, and find the closest chunks in the index.
+
+31
+00:02:46,000 --> 00:02:53,850
+Then we build a prompt: clear instructions, the retrieved passages, and the question.
+
+32
+00:02:54,000 --> 00:03:00,850
+Notice the instructions: use only this context, and say "I don't know" if the answer isn't there.
+
+33
+00:03:01,000 --> 00:03:08,850
+Finally, the language model reads it all and writes the answer.
+
+34
+00:03:09,500 --> 00:03:13,850
+Let's ask the same question again, this time with RAG.
+
+35
+00:03:14,000 --> 00:03:19,850
+The answer is correct, because it comes from the actual policy document.
+
+36
+00:03:20,000 --> 00:03:24,850
+And it cites its sources, so anyone can check where the answer came from.
+
+37
+00:03:25,000 --> 00:03:28,850
+That's the difference between a confident guess and a grounded answer.
+
+38
+00:03:29,500 --> 00:03:32,350
+So when should you use RAG?
+
+39
+00:03:32,500 --> 00:03:36,850
+When the answers live in private or internal documents...
+
+40
+00:03:37,000 --> 00:03:41,850
+...when information changes often, or there's far too much to fit in a prompt...
+
+41
+00:03:42,000 --> 00:03:45,850
+...and whenever answers need sources people can verify.
+
+42
+00:03:46,000 --> 00:03:50,850
+That's why RAG powers so many real assistants: customer support, internal knowledge bases, and document search.
+
+43
+00:03:51,500 --> 00:03:56,850
+In this series, we'll build a complete RAG application step by step, in Python.
+
+44
+00:03:57,000 --> 00:04:02,850
+Next, we'll load and chunk documents, then create embeddings and semantic search.
+
+45
+00:04:03,000 --> 00:04:07,850
+Then we'll retrieve the right passages, and generate grounded answers with citations...
+
+46
+00:04:08,000 --> 00:04:12,850
+...and finally measure and improve quality, like a real production system.
+
+47
+00:04:13,500 --> 00:04:17,350
+Want to read ahead? The full guide is free at beaiexpert.com.
+
+48
+00:04:17,500 --> 00:04:21,850
+See you in episode two.
